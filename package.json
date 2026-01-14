@@ -1,52 +1,41 @@
 {
-  "name": "lingvo-injector-app",
+  "name": "lingvo-injector",
+  "version": "0.1.0",
   "description": "Star Citizen Localization Installer",
   "private": true,
-  "version": "0.0.1",
-  "type": "module",
+  "workspaces": [
+    "app",
+    "server"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "tauri": "tauri",
-    "tauri:build:release": "tauri build",
-    "tauri:build:dev": "tauri build --config src-tauri/tauri.dev.conf.json --no-sign",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write \"./**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
-    "format:check": "prettier --check \"./**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
+    "dev:app": "npm run tauri dev --workspace=app",
+    "dev:server": "npm run dev --workspace=server",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:app\"",
+    "build:app": "npm run tauri:build:release --workspace=app",
+    "build:server": "echo 'Server does not require build'",
+    "start:server": "npm start --workspace=server",
+    "lint:app": "npm run lint --workspace=app",
+    "lint:server": "npm run lint --workspace=server",
+    "lint": "npm run lint:app && npm run lint:server",
+    "format:app": "npm run format --workspace=app",
+    "format:server": "npm run format --workspace=server",
+    "format": "npm run format:app && npm run format:server",
+    "install:all": "npm install && npm install --workspace=app && npm install --workspace=server"
   },
-  "dependencies": {
-    "@tauri-apps/api": "^2.9.0",
-    "@tauri-apps/plugin-dialog": "^2.4.0",
-    "@tauri-apps/plugin-fs": "^2.4.2",
-    "@tauri-apps/plugin-opener": "^2",
-    "@tauri-apps/plugin-process": "^2.3.1",
-    "@tauri-apps/plugin-updater": "^2.9.0",
-    "i18next": "^25.6.0",
-    "mobx": "^6.15.0",
-    "mobx-react-lite": "^4.1.1",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "react-i18next": "^16.1.1"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sc-localization/lingvo-injector-app"
   },
+  "keywords": [
+    "star-citizen",
+    "localization",
+    "translation",
+    "tauri",
+    "desktop-app"
+  ],
+  "author": "mvoof",
+  "license": "MIT",
   "devDependencies": {
-    "@eslint/js": "^9.36.0",
-    "@tauri-apps/cli": "^2.9.0",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^19.1.9",
-    "@typescript-eslint/eslint-plugin": "^8.44.1",
-    "@typescript-eslint/parser": "^8.44.1",
-    "@vitejs/plugin-react": "^5.0.3",
-    "eslint": "^9.36.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-prettier": "^5.5.4",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "prettier": "^3.6.2",
-    "typescript": "~5.9.2",
-    "vite": "^7.1.7"
+    "concurrently": "^8.2.2"
   }
 }

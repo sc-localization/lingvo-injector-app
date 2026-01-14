@@ -1,0 +1,17 @@
+ {
+  "LIVE": {
+    "version": "1.5.0",
+    "filename": "live_ru_1.5.0.zip", 
+    "notes": "Основное обновление перевода для LIVE."
+  },
+  "PTU": {
+    "version": "1.5.1-ptu",
+    "filename": "ptu_ru_1.5.1.zip",
+    "notes": "Обновление для тестового сервера PTU."
+  },
+  "HOTFIX": {
+    "version": "1.4.1",
+    "filename": "hotfix_ru_1.4.1.zip",
+    "notes": "Срочное исправление."
+  }
+}

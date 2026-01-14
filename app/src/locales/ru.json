@@ -1,0 +1,25 @@
+{
+  "translation": {
+    "title": "Менеджер локализации Star Citizen",
+    "select_app_language": "Выберите язык приложения:",
+    "select_translation_language": "Выберите язык перевода:",
+    "select_game_version": "Выберите версию игры:",
+    "initialize_game_folder_error": "Ошибка инициализации базовой папки: {{error}}",
+    "game_folder_found": "Выбрана базовая папка: {{folder}}",
+    "game_folder_not_found": "Базовая папка не найдена. Пожалуйста, выберите её вручную.",
+    "select_folder_dialog_title": "Выбрать базовую папку вручную",
+    "select_folder_dialog_error": "Ошибка выбора папки: {{error}}",
+    "change_base_game_folder_btn": "Выбрать другую базовую папку",
+    "select_base_game_folder_btn": "Выбрать базовую папку",
+    "install_localization_btn": "Установить локализацию",
+    "remove_localization_btn": "Удалить локализацию",
+    "installing_localization": "Установка локализации...",
+    "removing_localization": "Удаление локализации...",
+    "install_localization_success": "Локализация успешно установлена!",
+    "remove_localization_success": "Локализация успешно удалена!",
+    "install_localization_error": "Ошибка установки локализации: {{error}}",
+    "remove_localization_error": "Ошибка удаления локализации: {{error}}",
+    "settings_load_error": "Ошибка загрузки настроек: {{error}}",
+    "settings_save_error": "Ошибка сохранения настроек: {{error}}"
+  }
+}

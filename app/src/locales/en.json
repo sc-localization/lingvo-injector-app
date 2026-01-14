@@ -1,0 +1,25 @@
+{
+  "translation": {
+    "title": "Star Citizen Localization Manager",
+    "select_app_language": "Select application language:",
+    "select_translation_language": "Select translation language:",
+    "select_game_version": "Select game version:",
+    "initialize_game_folder_error": "Error initializing base folder: {{error}}",
+    "game_folder_found": "Selected base folder: {{folder}}",
+    "game_folder_not_found": "Base folder not found. Please select it manually.",
+    "select_folder_dialog_title": "Select base folder manually",
+    "select_folder_dialog_error": "Error selecting folder: {{error}}",
+    "change_base_game_folder_btn": "Select another base folder",
+    "select_base_game_folder_btn": "Select base folder",
+    "install_localization_btn": "Install Localization",
+    "remove_localization_btn": "Remove Localization",
+    "installing_localization": "Installing localization...",
+    "removing_localization": "Removing localization...",
+    "install_localization_success": "Localization installed successfully!",
+    "remove_localization_success": "Localization removed successfully!",
+    "install_localization_error": "Error installing localization: {{error}}",
+    "remove_localization_error": "Error removing localization: {{error}}",
+    "settings_load_error": "Error loading settings: {{error}}",
+    "settings_save_error": "Error saving settings: {{error}}"
+  }
+}
