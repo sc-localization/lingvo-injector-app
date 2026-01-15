@@ -1,0 +1,136 @@
+import { makeAutoObservable } from 'mobx';
+import i18n from '../i18n';
+
+import {
+  AppLanguageId,
+  AvailableGameVersions,
+  BaseGameFolder,
+  GameVersion,
+  TranslationLanguageId,
+  TranslationLanguageCode,
+} from '../types';
+import {
+  findAvailableVersions,
+  readSettings,
+  tryAutoFindBaseFolder,
+  writeSettings,
+} from '../services/settingsService';
+import { RootStore } from './RootStore';
+import { translationLanguages } from '../constants';
+
+export class SettingsStore {
+  root: RootStore;
+
+  selectedAppLanguage: AppLanguageId = 'en';
+  selectedTranslationLanguage: TranslationLanguageId = 'en';
+  selectedGameVersion: GameVersion = 'LIVE';
+  baseGameFolder: BaseGameFolder = null;
+  availableVersions: AvailableGameVersions = [];
+
+  constructor(root: RootStore) {
+    this.root = root;
+    makeAutoObservable(this);
+  }
+
+  // Computed getter for translation language code
+  get translationLanguageCode(): TranslationLanguageCode {
+    const language = translationLanguages.find(
+      (lang) => lang.id === this.selectedTranslationLanguage
+    );
+    return language?.code ?? 'english';
+  }
+
+  setAppLanguage = (languageId: AppLanguageId) => {
+    this.selectedAppLanguage = languageId;
+    i18n.changeLanguage(languageId);
+  };
+
+  setTranslationLanguage = (languageId: TranslationLanguageId) => {
+    this.selectedTranslationLanguage = languageId;
+  };
+
+  setSelectedGameVersion = (version: GameVersion) => {
+    this.selectedGameVersion = version;
+  };
+
+  setBaseGameFolder = (folder: BaseGameFolder) => {
+    this.baseGameFolder = folder;
+  };
+
+  private setAvailableVersions = (versions: AvailableGameVersions) => {
+    this.availableVersions = versions;
+  };
+
+  initGameFolder = async (
+    initialPath: BaseGameFolder = null
+  ): Promise<{
+    success: boolean;
+    folder?: string | null;
+    versions?: AvailableGameVersions;
+    error?: string;
+  }> => {
+    try {
+      const foundPath = initialPath || (await tryAutoFindBaseFolder());
+      this.setBaseGameFolder(foundPath);
+
+      if (foundPath) {
+        const versions = await findAvailableVersions(this.baseGameFolder);
+
+        // если версий нет значит игра там не обнаружена вывести сообщение
+        const upperVersions = versions.map(
+          (v) => v.toUpperCase() as GameVersion
+        );
+        this.setAvailableVersions(upperVersions);
+
+        return { success: true, folder: foundPath, versions: upperVersions };
+      } else {
+        return { success: false, folder: null };
+      }
+    } catch (error) {
+      const errMessage = error instanceof Error ? error.message : String(error);
+      console.error(`Not found game folder: ${errMessage}`);
+
+      return { success: false, error: errMessage };
+    } finally {
+      this.saveSettings();
+    }
+  };
+
+  loadSettings = async (): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const settings = await readSettings();
+      console.log(settings);
+
+      this.setAppLanguage(settings.app_language);
+      this.setTranslationLanguage(settings.translation_language);
+      this.setBaseGameFolder(settings.base_game_folder);
+
+      return { success: true };
+    } catch (error) {
+      this.selectedAppLanguage = 'en'; // fallback if error
+      i18n.changeLanguage('en');
+
+      const errMessage = error instanceof Error ? error.message : String(error);
+      console.error(`Error reading settings: ${errMessage}`);
+
+      return { success: false, error: errMessage };
+    }
+  };
+
+  saveSettings = async (): Promise<{ success: boolean; error?: string }> => {
+    try {
+      await writeSettings({
+        app_language: this.selectedAppLanguage,
+        translation_language: this.selectedTranslationLanguage,
+        base_game_folder: this.baseGameFolder,
+      });
+
+      return { success: true };
+    } catch (error) {
+      const errMessage = error instanceof Error ? error.message : String(error);
+      console.error('Error writing settings:', errMessage);
+
+      return { success: false, error: errMessage };
+    }
+  };
+}

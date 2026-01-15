@@ -7,11 +7,25 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Dependencies - Monorepo
+node_modules/
+app/node_modules/
+server/node_modules/
+dist/
+dist-ssr/
 *.local
+
+# Environment
 .env
+.env.local
+.env.*.local
+
+# Build outputs
+app/dist/
+app/build/
+app/src-tauri/target/
+target/
+dist
 
 # Editor directories and files
 .vscode/*
@@ -23,3 +37,18 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Temporary
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# IDE specific
+.continue/
+.claude
+CLAUDE.md
+
+# Rust analyzer
+.rust-analyzer/
