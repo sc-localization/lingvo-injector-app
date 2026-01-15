@@ -1,9 +1,5 @@
 import { invoke } from '@tauri-apps/api/core';
-import {
-  BaseGameFolder,
-  GameVersion,
-  TranslationLanguageCode,
-} from '../types';
+import { BaseGameFolder, GameVersion, TranslationLanguageCode } from '../types';
 
 /**
  * Set language configuration in user.cfg and create Localization folder

@@ -94,6 +94,7 @@ The app uses a two-tier system for language handling:
 
 > [!IMPORTANT]  
 > Both Russian and Korean translations install to the same folder (`korean_(south_korea)`) in Star Citizen because:
+>
 > - Star Citizen doesn't natively support Cyrillic
 > - Korean locale supports non-Latin characters including Cyrillic
 > - This is a workaround to display Russian text in the game
