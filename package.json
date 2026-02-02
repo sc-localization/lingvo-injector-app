@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Star Citizen Localization Installer",
   "private": true,
+  "type": "module",
   "workspaces": [
     "app",
     "server"
@@ -20,7 +21,8 @@
     "format:app": "npm run format --workspace=app",
     "format:server": "npm run format --workspace=server",
     "format": "npm run format:app && npm run format:server",
-    "install:all": "npm install && npm install --workspace=app && npm install --workspace=server"
+    "install:all": "npm install && npm install --workspace=app && npm install --workspace=server",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -36,6 +38,23 @@
   "author": "mvoof",
   "license": "MIT",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "@commitlint/cli": "^20.4.1",
+    "@commitlint/config-conventional": "^20.4.1",
+    "concurrently": "^8.2.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7"
+  },
+  "lint-staged": {
+    "app/**/*.{ts,tsx,js,jsx}": [
+      "eslint --fix --config app/eslint.config.js",
+      "prettier --write"
+    ],
+    "server/**/*.js": [
+      "eslint --fix --config server/eslint.config.js",
+      "prettier --write"
+    ],
+    "**/*.{json,md,html,css}": [
+      "prettier --write"
+    ]
   }
 }
