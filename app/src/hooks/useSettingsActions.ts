@@ -83,7 +83,10 @@ export const useSettingsActions = () => {
   );
 
   const selectGameFolder = useCallback(async () => {
+    if (uiStore.isDialogOpen) return;
+
     try {
+      uiStore.setDialogOpen(true);
       const selectedPath = await open({
         multiple: false,
         directory: true,
@@ -100,8 +103,10 @@ export const useSettingsActions = () => {
         key: 'select_folder_dialog_error',
         payload: { error: errMessage },
       });
+    } finally {
+      uiStore.setDialogOpen(false);
     }
-  }, []);
+  }, [initializeGameFolder, t, uiStore]);
 
   const installLocalization = useCallback(async () => {
     if (

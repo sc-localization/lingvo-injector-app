@@ -7,6 +7,7 @@ export class UIStore {
 
   // loading: boolean = false;
   message: Message = null;
+  isDialogOpen: boolean = false;
 
   constructor(root: RootStore) {
     this.root = root;
@@ -16,6 +17,10 @@ export class UIStore {
   // setLoading = (loading: boolean) => {
   //   this.loading = loading;
   // };
+
+  setDialogOpen = (isOpen: boolean) => {
+    this.isDialogOpen = isOpen;
+  };
 
   setMessage = (message: Message) => {
     this.message = message;
