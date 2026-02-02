@@ -100,7 +100,7 @@ const App = observer(() => {
           </>
         )}
 
-      <Button onClick={selectGameFolder}>
+      <Button onClick={selectGameFolder} disabled={uiStore.isDialogOpen}>
         {settingsStore.baseGameFolder
           ? t('change_base_game_folder_btn')
           : t('select_base_game_folder_btn')}
