@@ -48,7 +48,9 @@ dist
 # IDE specific
 .continue/
 .claude
+.agent
 CLAUDE.md
+GEMINI.md
 
 # Rust analyzer
 .rust-analyzer/
