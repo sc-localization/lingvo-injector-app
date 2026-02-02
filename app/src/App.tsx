@@ -6,6 +6,7 @@ import { appLanguages, translationLanguages } from './constants';
 import { useStores } from './stores/RootStore';
 import Select from './components/Select/Select';
 import { useSettingsActions } from './hooks/useSettingsActions';
+import { useUpdateActions } from './hooks/useUpdateActions';
 import Button from './components/Button/Button';
 import MessageDisplay from './components/MessageDisplay/MessageDisplay';
 
@@ -24,14 +25,22 @@ const App = observer(() => {
     uninstallLocalization,
   } = useSettingsActions();
 
+  const { checkUpdates, installUpdate } = useUpdateActions();
+
   useEffect(() => {
     const init = async () => {
       await loadSettings();
       await initializeGameFolder(settingsStore.baseGameFolder); // авто-поиск при старте
+      checkUpdates();
     };
 
     init();
-  }, [initializeGameFolder, loadSettings, settingsStore.baseGameFolder]);
+  }, [
+    initializeGameFolder,
+    loadSettings,
+    settingsStore.baseGameFolder,
+    checkUpdates,
+  ]);
 
   return (
     <div>
@@ -105,6 +114,24 @@ const App = observer(() => {
           ? t('change_base_game_folder_btn')
           : t('select_base_game_folder_btn')}
       </Button>
+
+      <div
+        style={{
+          marginTop: '20px',
+          borderTop: '1px solid #ccc',
+          paddingTop: '10px',
+        }}
+      >
+        <Button onClick={checkUpdates} disabled={uiStore.isCheckingUpdates}>
+          {uiStore.isCheckingUpdates
+            ? t('checking_for_updates')
+            : t('check_for_updates_btn')}
+        </Button>
+
+        {uiStore.availableUpdate && (
+          <Button onClick={installUpdate}>{t('install_update_btn')}</Button>
+        )}
+      </div>
     </div>
   );
 });

@@ -20,6 +20,12 @@
     "install_localization_error": "Error installing localization: {{error}}",
     "remove_localization_error": "Error removing localization: {{error}}",
     "settings_load_error": "Error loading settings: {{error}}",
-    "settings_save_error": "Error saving settings: {{error}}"
+    "settings_save_error": "Error saving settings: {{error}}",
+    "check_for_updates_btn": "Check for Updates",
+    "checking_for_updates": "Checking for updates...",
+    "update_available": "Update available: {{version}}",
+    "no_updates_found": "No updates found.",
+    "update_error": "Error checking for updates: {{error}}",
+    "install_update_btn": "Install Update"
   }
 }

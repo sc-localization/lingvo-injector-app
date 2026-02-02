@@ -3,6 +3,9 @@ name: PR Check
 on:
   pull_request:
     branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
 
 jobs:
   check-changes:
@@ -13,7 +16,6 @@ jobs:
     outputs:
       app: ${{ steps.filter.outputs.app }}
       server: ${{ steps.filter.outputs.server }}
-      docs: ${{ steps.filter.outputs.docs }}
       ci: ${{ steps.filter.outputs.ci }}
     steps:
       - uses: actions/checkout@v4
@@ -31,9 +33,6 @@ jobs:
               - 'package-lock.json'
             server:
               - 'server/**'
-            docs:
-              - 'docs/**'
-              - '*.md'
             ci:
               - '.github/**'
 
@@ -74,7 +73,7 @@ jobs:
           platform: ${{ matrix.platform }}
 
       - name: Build Tauri App
-        run: npm run build:app
+        run: npm run tauri:build:dev --workspace=app
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4

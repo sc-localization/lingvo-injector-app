@@ -20,6 +20,12 @@
     "install_localization_error": "Ошибка установки локализации: {{error}}",
     "remove_localization_error": "Ошибка удаления локализации: {{error}}",
     "settings_load_error": "Ошибка загрузки настроек: {{error}}",
-    "settings_save_error": "Ошибка сохранения настроек: {{error}}"
+    "settings_save_error": "Ошибка сохранения настроек: {{error}}",
+    "check_for_updates_btn": "Проверить обновления",
+    "checking_for_updates": "Проверка обновлений...",
+    "update_available": "Доступно обновление: {{version}}",
+    "no_updates_found": "Обновлений не найдено.",
+    "update_error": "Ошибка проверки обновлений: {{error}}",
+    "install_update_btn": "Установить обновление"
   }
 }
