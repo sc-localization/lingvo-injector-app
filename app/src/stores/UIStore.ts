@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { Update } from '@tauri-apps/plugin-updater';
 import type { Message } from '../types';
 import { RootStore } from './RootStore';
 
@@ -8,6 +9,8 @@ export class UIStore {
   // loading: boolean = false;
   message: Message = null;
   isDialogOpen: boolean = false;
+  availableUpdate: Update | null = null;
+  isCheckingUpdates: boolean = false;
 
   constructor(root: RootStore) {
     this.root = root;
@@ -28,5 +31,13 @@ export class UIStore {
 
   clearMessage = () => {
     this.message = null;
+  };
+
+  setAvailableUpdate = (update: Update | null) => {
+    this.availableUpdate = update;
+  };
+
+  setIsCheckingUpdates = (checking: boolean) => {
+    this.isCheckingUpdates = checking;
   };
 }
