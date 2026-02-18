@@ -20,6 +20,17 @@ export type GameVersion = 'LIVE' | 'PTU' | 'HOTFIX';
 export type BaseGameFolder = string | null;
 export type AvailableGameVersions = readonly GameVersion[];
 
+export type ServerVersionInfo = {
+  version: string;
+  filename: string;
+  notes: string;
+  languages: string[];
+};
+
+export type ServerVersionsResponse = Record<string, ServerVersionInfo> & {
+  baseUrl?: string;
+};
+
 export type AppSettings = {
   app_language: AppLanguageId;
   translation_language: TranslationLanguageId;

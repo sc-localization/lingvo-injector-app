@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 import i18n from '../i18n';
 
 import {
@@ -8,6 +8,7 @@ import {
   GameVersion,
   TranslationLanguageId,
   TranslationLanguageCode,
+  ServerVersionsResponse,
 } from '../types';
 import {
   findAvailableVersions,
@@ -17,6 +18,7 @@ import {
 } from '../services/settingsService';
 import { RootStore } from './RootStore';
 import { translationLanguages } from '../constants';
+import { fetchVersions } from '../api/translationApi';
 
 export class SettingsStore {
   root: RootStore;
@@ -26,6 +28,7 @@ export class SettingsStore {
   selectedGameVersion: GameVersion = 'LIVE';
   baseGameFolder: BaseGameFolder = null;
   availableVersions: AvailableGameVersions = [];
+  serverVersions: ServerVersionsResponse | null = null;
 
   constructor(root: RootStore) {
     this.root = root;
@@ -40,6 +43,22 @@ export class SettingsStore {
     return language?.code ?? 'english';
   }
 
+  // Computed getter for available translation languages for the selected version
+  get availableTranslationLanguages() {
+    if (!this.serverVersions || !this.selectedGameVersion) {
+      return [];
+    }
+
+    const versionInfo = this.serverVersions[this.selectedGameVersion];
+    if (!versionInfo || !versionInfo.languages) {
+      return [];
+    }
+
+    return translationLanguages.filter((lang) =>
+      versionInfo.languages.includes(lang.id)
+    );
+  }
+
   setAppLanguage = (languageId: AppLanguageId) => {
     this.selectedAppLanguage = languageId;
     i18n.changeLanguage(languageId);
@@ -51,6 +70,14 @@ export class SettingsStore {
 
   setSelectedGameVersion = (version: GameVersion) => {
     this.selectedGameVersion = version;
+    // Reset translation language if not available for this version
+    const available = this.availableTranslationLanguages;
+    if (
+      available.length > 0 &&
+      !available.find((l) => l.id === this.selectedTranslationLanguage)
+    ) {
+      this.setTranslationLanguage(available[0].id as TranslationLanguageId);
+    }
   };
 
   setBaseGameFolder = (folder: BaseGameFolder) => {
@@ -59,6 +86,17 @@ export class SettingsStore {
 
   private setAvailableVersions = (versions: AvailableGameVersions) => {
     this.availableVersions = versions;
+  };
+
+  loadServerVersions = async () => {
+    try {
+      const versions = await fetchVersions();
+      runInAction(() => {
+        this.serverVersions = versions;
+      });
+    } catch (error) {
+      console.error('Failed to load server versions:', error);
+    }
   };
 
   initGameFolder = async (
@@ -81,6 +119,13 @@ export class SettingsStore {
           (v) => v.toUpperCase() as GameVersion
         );
         this.setAvailableVersions(upperVersions);
+
+        if (
+          upperVersions.length > 0 &&
+          !upperVersions.includes(this.selectedGameVersion)
+        ) {
+          this.setSelectedGameVersion(upperVersions[0]);
+        }
 
         return { success: true, folder: foundPath, versions: upperVersions };
       } else {

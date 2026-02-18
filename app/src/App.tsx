@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
-import { appLanguages, translationLanguages } from './constants';
+import { appLanguages } from './constants';
 import { useStores } from './stores/RootStore';
 import Select from './components/Select/Select';
 import { useSettingsActions } from './hooks/useSettingsActions';
@@ -16,6 +16,7 @@ const App = observer(() => {
 
   const {
     loadSettings,
+    loadServerVersions,
     initializeGameFolder,
     changeAppLanguage,
     changeTranslationLanguage,
@@ -29,7 +30,7 @@ const App = observer(() => {
 
   useEffect(() => {
     const init = async () => {
-      await loadSettings();
+      await Promise.all([loadSettings(), loadServerVersions()]);
       await initializeGameFolder(settingsStore.baseGameFolder); // авто-поиск при старте
       checkUpdates();
     };
@@ -38,6 +39,7 @@ const App = observer(() => {
   }, [
     initializeGameFolder,
     loadSettings,
+    loadServerVersions,
     settingsStore.baseGameFolder,
     checkUpdates,
   ]);
@@ -55,12 +57,19 @@ const App = observer(() => {
         onChange={changeAppLanguage}
       />
 
-      <Select
-        labelKey="select_translation_language"
-        options={translationLanguages}
-        value={settingsStore.selectedTranslationLanguage}
-        onChange={changeTranslationLanguage}
-      />
+      {settingsStore.availableTranslationLanguages.length > 0 ? (
+        <Select
+          labelKey="select_translation_language"
+          options={settingsStore.availableTranslationLanguages}
+          value={settingsStore.selectedTranslationLanguage}
+          onChange={changeTranslationLanguage}
+        />
+      ) : (
+        settingsStore.selectedGameVersion &&
+        settingsStore.serverVersions && (
+          <p style={{ color: 'orange' }}>{t('no_translations_available')}</p>
+        )
+      )}
 
       {settingsStore.baseGameFolder && (
         <Select
@@ -85,30 +94,30 @@ const App = observer(() => {
         }
       />
 
-      {settingsStore.baseGameFolder &&
-        settingsStore.availableVersions.length > 0 && (
-          <>
-            <Button
-              onClick={installLocalization}
-              disabled={
-                !settingsStore.baseGameFolder ||
-                !settingsStore.selectedGameVersion
-              }
-            >
-              {t('install_localization_btn')}
-            </Button>
-            <Button
-              onClick={uninstallLocalization}
-              disabled={
-                !settingsStore.baseGameFolder ||
-                !settingsStore.selectedGameVersion
-              }
-            >
-              {t('remove_localization_btn')}
-            </Button>
-          </>
-        )}
+      {settingsStore.availableVersions.length > 0 && (
+        <>
+          <Button
+            onClick={installLocalization}
+            disabled={
+              !settingsStore.baseGameFolder ||
+              !settingsStore.selectedGameVersion ||
+              settingsStore.availableTranslationLanguages.length === 0
+            }
+          >
+            {t('install_localization_btn')}
+          </Button>
 
+          <Button
+            onClick={uninstallLocalization}
+            disabled={
+              !settingsStore.baseGameFolder ||
+              !settingsStore.selectedGameVersion
+            }
+          >
+            {t('remove_localization_btn')}
+          </Button>
+        </>
+      )}
       <Button onClick={selectGameFolder} disabled={uiStore.isDialogOpen}>
         {settingsStore.baseGameFolder
           ? t('change_base_game_folder_btn')

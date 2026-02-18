@@ -35,6 +35,10 @@ export const useSettingsActions = () => {
     }
   }, []);
 
+  const loadServerVersions = useCallback(async () => {
+    await settingsStore.loadServerVersions();
+  }, []);
+
   const saveSettings = useCallback(async () => {
     const result = await settingsStore.saveSettings();
 
@@ -180,6 +184,7 @@ export const useSettingsActions = () => {
 
   return {
     loadSettings,
+    loadServerVersions,
     initializeGameFolder,
     changeAppLanguage,
     changeTranslationLanguage,
