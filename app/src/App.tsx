@@ -118,6 +118,13 @@ const App = observer(() => {
           </Button>
         </>
       )}
+
+      {settingsStore.baseGameFolder && (
+        <p style={{ fontSize: '0.9em', color: '#666', marginBottom: '5px' }}>
+          {t('selected_folder', { folder: settingsStore.baseGameFolder })}
+        </p>
+      )}
+
       <Button onClick={selectGameFolder} disabled={uiStore.isDialogOpen}>
         {settingsStore.baseGameFolder
           ? t('change_base_game_folder_btn')

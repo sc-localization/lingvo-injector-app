@@ -5,6 +5,7 @@
     "select_translation_language": "Select translation language:",
     "select_game_version": "Select game version:",
     "initialize_game_folder_error": "Error initializing base folder: {{error}}",
+    "selected_folder": "Selected folder: {{folder}}",
     "game_folder_found": "Selected base folder: {{folder}}",
     "game_folder_not_found": "Base folder not found. Please select it manually.",
     "select_folder_dialog_title": "Select base folder manually",

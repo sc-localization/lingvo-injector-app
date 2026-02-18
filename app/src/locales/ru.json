@@ -5,6 +5,7 @@
     "select_translation_language": "Выберите язык перевода:",
     "select_game_version": "Выберите версию игры:",
     "initialize_game_folder_error": "Ошибка инициализации базовой папки: {{error}}",
+    "selected_folder": "Выбранная папка: {{folder}}",
     "game_folder_found": "Выбрана базовая папка: {{folder}}",
     "game_folder_not_found": "Базовая папка не найдена. Пожалуйста, выберите её вручную.",
     "select_folder_dialog_title": "Выбрать базовую папку вручную",
