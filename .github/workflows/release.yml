@@ -19,6 +19,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Dependencies
         uses: ./.github/actions/setup-dependencies
@@ -26,7 +28,12 @@ jobs:
           node-version: '20'
           platform: ${{ matrix.platform }}
 
+      - name: Generate Release Notes
+        id: notes
+        uses: ./.github/actions/generate-release-notes
+
       - name: Build Tauri Application
+        id: tauri
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -36,11 +43,106 @@ jobs:
           projectPath: app
           tagName: ${{ github.ref_name }}
           releaseName: ${{ github.ref_name }}
+          releaseBody: ${{ steps.notes.outputs.release_body }}
           releaseDraft: true
           prerelease: false
 
-      - name: Upload Artifacts
+      - name: Collect Signatures
+        shell: bash
+        run: |
+          mkdir -p signatures
+          # Find .sig files in the target directory
+          find app/src-tauri/target/release/bundle -name "*.sig" -exec cp {} signatures/ \;
+          echo "Collected signatures:"
+          ls -R signatures
+
+      - name: Upload Signatures
         uses: actions/upload-artifact@v4
         with:
-          name: build-${{ matrix.platform }}-${{ github.ref_name }}
-          path: app/src-tauri/target/release/bundle/*
+          name: signatures-${{ matrix.platform }}
+          path: signatures/*
+
+  publish-latest-json:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Signatures
+        uses: actions/download-artifact@v4
+        with:
+          pattern: signatures-*
+          path: all-signatures
+          merge-multiple: true
+
+      - name: Generate latest.json
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "Generating latest.json..."
+          
+          # Remove 'v' from version if present for the version field
+          VERSION="${TAG_NAME#v}"
+          
+          # Initialize latest.json
+          # Note: 'notes' is hardcoded or could be passed. Since we don't have the body here easily (unless passed via artifact),
+          # we can just point to the release or use a generic message.
+          # The updater shows these notes to the user.
+          # Ideally, we should fetch the release notes from the Release we just created.
+          # But for now, "Update available" is safe.
+          
+          cat <<EOF > latest.json
+          {
+            "version": "$VERSION",
+            "notes": "Update available. See release notes for details.",
+            "pub_date": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+            "platforms": {}
+          }
+          EOF
+          
+          # Function to update json
+          add_platform() {
+            local platform=$1
+            local sig_file=$2
+            
+            if [ ! -f "$sig_file" ]; then
+              echo "Warning: Signature file $sig_file not found."
+              return
+            fi
+            
+            local binary_name=$(basename "$sig_file" .sig)
+            local signature=$(cat "$sig_file")
+            local url="https://github.com/$REPO/releases/download/$TAG_NAME/$binary_name"
+            
+            echo "Adding $platform from $binary_name"
+            
+            # Use jq to update the file
+            jq --arg p "$platform" --arg s "$signature" --arg u "$url" \
+               '.platforms[$p] = {signature: $s, url: $u}' latest.json > latest.json.tmp && mv latest.json.tmp latest.json
+          }
+          
+          # Iterate through signatures
+          for f in all-signatures/*.sig; do
+            echo "Processing $f"
+            if [[ "$f" == *".AppImage.sig" ]]; then
+              add_platform "linux-x86_64" "$f"
+            elif [[ "$f" == *"setup.exe.sig" ]]; then
+              # NSIS installer
+              add_platform "windows-x86_64" "$f"
+            elif [[ "$f" == *".msi.sig" ]]; then
+              # MSI installer
+              add_platform "windows-x86_64" "$f"
+            fi
+          done
+          
+          echo "Generated latest.json:"
+          cat latest.json
+
+      - name: Upload latest.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload ${{ github.ref_name }} latest.json --clobber
