@@ -29,7 +29,7 @@ app.get("/versions/versions.json", (req, res) => {
 
     const baseUrl =
       process.env.BASE_URL ||
-      `${req.protocol}://${req.get("host")}/translations`;
+      `${req.protocol}://localhost:${port}/translations`;
     versionsJson.baseUrl = baseUrl;
 
     res.json(versionsJson);
