@@ -1,6 +1,30 @@
 use regex::Regex;
 use std::{env, fs, path::PathBuf};
 
+/// Validate that a user-supplied path component (e.g. version name, language code)
+/// does not contain path traversal sequences or absolute path indicators.
+fn validate_path_component(component: &str, label: &str) -> Result<(), String> {
+    let path = PathBuf::from(component);
+
+    if path.is_absolute() {
+        return Err(format!("{} must not be an absolute path", label));
+    }
+
+    for part in path.components() {
+        match part {
+            std::path::Component::Normal(_) => {}
+            _ => {
+                return Err(format!(
+                    "{} contains invalid path component: {:?}",
+                    label, part
+                ));
+            }
+        }
+    }
+
+    Ok(())
+}
+
 /// Get the path to the configuration file (config.json)
 fn get_config_path() -> Result<PathBuf, String> {
     let mut exe_path =
@@ -171,6 +195,8 @@ fn set_language_config(
     selected_language_code: String,
     selected_version: String,
 ) -> Result<String, String> {
+    validate_path_component(&selected_version, "selected_version")?;
+    validate_path_component(&selected_language_code, "selected_language_code")?;
     let base_path = PathBuf::from(&base_folder_path);
     let version_folder = base_path.join(&selected_version);
 
@@ -225,6 +251,7 @@ fn read_language_config(
     base_folder_path: String,
     selected_version: String,
 ) -> Result<Option<String>, String> {
+    validate_path_component(&selected_version, "selected_version")?;
     let base_path = PathBuf::from(&base_folder_path);
     let user_cfg_path = base_path.join(&selected_version).join("user.cfg");
 
@@ -248,6 +275,8 @@ fn remove_localization(
     selected_language_code: String,
     selected_version: String,
 ) -> Result<(), String> {
+    validate_path_component(&selected_version, "selected_version")?;
+    validate_path_component(&selected_language_code, "selected_language_code")?;
     let base_path = PathBuf::from(&base_folder_path);
     let version_folder = base_path.join(&selected_version);
 
