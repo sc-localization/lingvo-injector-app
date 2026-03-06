@@ -34,7 +34,7 @@ export const setLanguageConfig = async (
  * @param version - Game version (LIVE, PTU, HOTFIX)
  */
 export const removeLocalization = async (
-  baseFolder: BaseGameFolder,
+  baseFolder: number,
   languageCode: TranslationLanguageCode,
   version: GameVersion
 ): Promise<void> => {

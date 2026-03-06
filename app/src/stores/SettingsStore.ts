@@ -9,6 +9,7 @@ import {
   TranslationLanguageId,
   TranslationLanguageCode,
   ServerVersionsResponse,
+  InstalledTranslations,
 } from '../types';
 import {
   findAvailableVersions,
@@ -29,6 +30,8 @@ export class SettingsStore {
   baseGameFolder: BaseGameFolder = null;
   availableVersions: AvailableGameVersions = [];
   serverVersions: ServerVersionsResponse | null = null;
+  installedTranslations: InstalledTranslations = {};
+  autoCheckTranslationUpdates: boolean = false;
 
   constructor(root: RootStore) {
     this.root = root;
@@ -54,8 +57,8 @@ export class SettingsStore {
       return [];
     }
 
-    return translationLanguages.filter((lang) =>
-      versionInfo.languages.includes(lang.id)
+    return translationLanguages.filter(
+      (lang) => lang.id in versionInfo.languages
     );
   }
 
@@ -86,6 +89,37 @@ export class SettingsStore {
 
   private setAvailableVersions = (versions: AvailableGameVersions) => {
     this.availableVersions = versions;
+  };
+
+  setAutoCheckTranslationUpdates = (enabled: boolean) => {
+    this.autoCheckTranslationUpdates = enabled;
+    this.saveSettings();
+  };
+
+  setInstalledTranslation = (
+    gameVersion: GameVersion,
+    languageId: TranslationLanguageId,
+    version: string
+  ) => {
+    const key = `${gameVersion}_${languageId}`;
+    this.installedTranslations = {
+      ...this.installedTranslations,
+      [key]: {
+        version,
+        installedAt: new Date().toISOString(),
+        languageId,
+      },
+    };
+  };
+
+  removeInstalledTranslation = (
+    gameVersion: GameVersion,
+    languageId: TranslationLanguageId
+  ) => {
+    const key = `${gameVersion}_${languageId}`;
+    const copy = { ...this.installedTranslations };
+    delete copy[key];
+    this.installedTranslations = copy;
   };
 
   loadServerVersions = async () => {
@@ -149,6 +183,9 @@ export class SettingsStore {
       this.setAppLanguage(settings.app_language);
       this.setTranslationLanguage(settings.translation_language);
       this.setBaseGameFolder(settings.base_game_folder);
+      this.installedTranslations = settings.installed_translations ?? {};
+      this.autoCheckTranslationUpdates =
+        settings.auto_check_translation_updates ?? false;
 
       return { success: true };
     } catch (error) {
@@ -168,6 +205,8 @@ export class SettingsStore {
         app_language: this.selectedAppLanguage,
         translation_language: this.selectedTranslationLanguage,
         base_game_folder: this.baseGameFolder,
+        installed_translations: this.installedTranslations,
+        auto_check_translation_updates: this.autoCheckTranslationUpdates,
       });
 
       return { success: true };

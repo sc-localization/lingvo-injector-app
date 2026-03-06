@@ -7,6 +7,7 @@ import { useStores } from './stores/RootStore';
 import Select from './components/Select/Select';
 import { useSettingsActions } from './hooks/useSettingsActions';
 import { useUpdateActions } from './hooks/useUpdateActions';
+import { useTranslationUpdateActions } from './hooks/useTranslationUpdateActions';
 import Button from './components/Button/Button';
 import MessageDisplay from './components/MessageDisplay/MessageDisplay';
 
@@ -26,13 +27,17 @@ const App = observer(() => {
     uninstallLocalization,
   } = useSettingsActions();
 
-  const { checkUpdates, installUpdate } = useUpdateActions();
+  const { checkAppUpdates, installUpdate } = useUpdateActions();
+
+  const { checkTranslationUpdates, updateTranslation } =
+    useTranslationUpdateActions(installLocalization);
 
   useEffect(() => {
     const init = async () => {
       await Promise.all([loadSettings(), loadServerVersions()]);
-      await initializeGameFolder(settingsStore.baseGameFolder); // авто-поиск при старте
-      checkUpdates();
+      await initializeGameFolder(settingsStore.baseGameFolder);
+      checkAppUpdates();
+      checkTranslationUpdates();
     };
 
     init();
@@ -41,14 +46,31 @@ const App = observer(() => {
     loadSettings,
     loadServerVersions,
     settingsStore.baseGameFolder,
-    checkUpdates,
+    checkAppUpdates,
+    checkTranslationUpdates,
   ]);
+
+  const currentVersionStatus =
+    uiStore.translationVersionStatuses[settingsStore.selectedGameVersion];
+
+  const hasUpdateForCurrentVersion = currentVersionStatus?.hasUpdate ?? false;
 
   return (
     <div>
       <header>
         <h1>{t('title')}</h1>
       </header>
+
+      <p style={{ fontSize: '0.9em', color: '#666', marginBottom: '5px' }}>
+        {settingsStore.baseGameFolder
+          ? t('selected_folder', { folder: settingsStore.baseGameFolder })
+          : t('folder_not_selected')}
+      </p>
+      <Button onClick={selectGameFolder} disabled={uiStore.isDialogOpen}>
+        {settingsStore.baseGameFolder
+          ? t('change_base_game_folder_btn')
+          : t('select_base_game_folder_btn')}
+      </Button>
 
       <Select
         labelKey="select_app_language"
@@ -85,6 +107,20 @@ const App = observer(() => {
         />
       )}
 
+      {currentVersionStatus && (
+        <p style={{ fontSize: '0.85em', color: '#888' }}>
+          {currentVersionStatus.installedVersion
+            ? t('translation_installed_version', {
+                version: currentVersionStatus.installedVersion,
+              })
+            : t('no_translation_installed')}
+          {' · '}
+          {t('translation_server_version', {
+            version: currentVersionStatus.serverVersion,
+          })}
+        </p>
+      )}
+
       <MessageDisplay
         message={
           uiStore.message && {
@@ -111,25 +147,16 @@ const App = observer(() => {
             onClick={uninstallLocalization}
             disabled={
               !settingsStore.baseGameFolder ||
-              !settingsStore.selectedGameVersion
+              !settingsStore.selectedGameVersion ||
+              !settingsStore.installedTranslations[
+                `${settingsStore.selectedGameVersion}_${settingsStore.selectedTranslationLanguage}`
+              ]
             }
           >
             {t('remove_localization_btn')}
           </Button>
         </>
       )}
-
-      {settingsStore.baseGameFolder && (
-        <p style={{ fontSize: '0.9em', color: '#666', marginBottom: '5px' }}>
-          {t('selected_folder', { folder: settingsStore.baseGameFolder })}
-        </p>
-      )}
-
-      <Button onClick={selectGameFolder} disabled={uiStore.isDialogOpen}>
-        {settingsStore.baseGameFolder
-          ? t('change_base_game_folder_btn')
-          : t('select_base_game_folder_btn')}
-      </Button>
 
       <div
         style={{
@@ -138,10 +165,53 @@ const App = observer(() => {
           paddingTop: '10px',
         }}
       >
-        <Button onClick={checkUpdates} disabled={uiStore.isCheckingUpdates}>
+        <Button
+          onClick={checkTranslationUpdates}
+          disabled={uiStore.isCheckingTranslationUpdates}
+        >
+          {uiStore.isCheckingTranslationUpdates
+            ? t('checking_translation_updates')
+            : t('check_translation_updates_btn')}
+        </Button>
+
+        <Button
+          onClick={updateTranslation}
+          disabled={!hasUpdateForCurrentVersion}
+        >
+          {t('update_translation_btn')}
+        </Button>
+
+        <label
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            marginTop: '8px',
+            fontSize: '0.9em',
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={settingsStore.autoCheckTranslationUpdates}
+            onChange={(e) =>
+              settingsStore.setAutoCheckTranslationUpdates(e.target.checked)
+            }
+          />
+          {t('auto_check_translation_updates')}
+        </label>
+      </div>
+
+      <div
+        style={{
+          marginTop: '20px',
+          borderTop: '1px solid #ccc',
+          paddingTop: '10px',
+        }}
+      >
+        <Button onClick={checkAppUpdates} disabled={uiStore.isCheckingUpdates}>
           {uiStore.isCheckingUpdates
             ? t('checking_for_updates')
-            : t('check_for_updates_btn')}
+            : t('check_for_app_updates_btn')}
         </Button>
 
         {uiStore.availableUpdate && (

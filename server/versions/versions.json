@@ -1,17 +1,20 @@
- {
+{
   "LIVE": {
-    "version": "1.5.0",
-    "filename": "live_ru_1.5.0.zip", 
-    "notes": "Основное обновление перевода для LIVE."
+    "languages": {
+      "ru": { "version": "1.5.0" },
+      "de": { "version": "1.5.5" }
+    }
   },
   "PTU": {
-    "version": "1.5.1-ptu",
-    "filename": "ptu_ru_1.5.1.zip",
-    "notes": "Обновление для тестового сервера PTU."
+    "languages": {
+      "ru": { "version": "1.5.1" },
+      "fr": { "version": "1.0.1" }
+    }
   },
   "HOTFIX": {
-    "version": "1.4.1",
-    "filename": "hotfix_ru_1.4.1.zip",
-    "notes": "Срочное исправление."
+    "languages": {
+      "ru": { "version": "1.5.2" },
+      "es": { "version": "1.7.2" }
+    }
   }
 }

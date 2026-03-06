@@ -8,7 +8,7 @@ import {
 export const useUpdateActions = () => {
   const { uiStore } = useStores();
 
-  const checkUpdates = useCallback(async () => {
+  const checkAppUpdates = useCallback(async () => {
     uiStore.setIsCheckingUpdates(true);
     uiStore.clearMessage();
 
@@ -57,7 +57,7 @@ export const useUpdateActions = () => {
   }, [uiStore]);
 
   return {
-    checkUpdates,
+    checkAppUpdates,
     installUpdate,
   };
 };

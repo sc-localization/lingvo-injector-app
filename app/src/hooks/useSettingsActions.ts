@@ -68,13 +68,7 @@ export const useSettingsActions = () => {
     async (initialPath: BaseGameFolder = null) => {
       const result = await settingsStore.initGameFolder(initialPath);
 
-      if (result.success && result.folder) {
-        uiStore.setMessage({
-          type: 'info',
-          key: 'game_folder_found',
-          payload: { folder: result.folder },
-        });
-      } else if (!result.success && !result.error) {
+      if (!result.success && !result.error) {
         uiStore.setMessage({
           type: 'info',
           key: 'game_folder_not_found',
@@ -143,6 +137,18 @@ export const useSettingsActions = () => {
       // 3. Write translation file to localization folder
       await writeTextFile(`${locPath}/${fileName}`, translationContent);
 
+      // 4. Record installed translation version
+      const serverVersion =
+        settingsStore.serverVersions?.[settingsStore.selectedGameVersion]
+          ?.languages?.[settingsStore.selectedTranslationLanguage]?.version ??
+        'unknown';
+      settingsStore.setInstalledTranslation(
+        settingsStore.selectedGameVersion,
+        settingsStore.selectedTranslationLanguage,
+        serverVersion
+      );
+      await saveSettings();
+
       uiStore.setMessage({
         type: 'success',
         key: 'install_localization_success',
@@ -171,6 +177,12 @@ export const useSettingsActions = () => {
         settingsStore.translationLanguageCode,
         settingsStore.selectedGameVersion
       );
+
+      settingsStore.removeInstalledTranslation(
+        settingsStore.selectedGameVersion,
+        settingsStore.selectedTranslationLanguage
+      );
+      await saveSettings();
 
       uiStore.setMessage({
         type: 'success',

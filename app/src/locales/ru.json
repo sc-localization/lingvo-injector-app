@@ -6,7 +6,7 @@
     "select_game_version": "Выберите версию игры:",
     "initialize_game_folder_error": "Ошибка инициализации базовой папки: {{error}}",
     "selected_folder": "Выбранная папка: {{folder}}",
-    "game_folder_found": "Выбрана базовая папка: {{folder}}",
+    "folder_not_selected": "Папка не выбрана",
     "game_folder_not_found": "Базовая папка не найдена. Пожалуйста, выберите её вручную.",
     "select_folder_dialog_title": "Выбрать базовую папку вручную",
     "select_folder_dialog_error": "Ошибка выбора папки: {{error}}",
@@ -23,11 +23,22 @@
     "remove_localization_error": "Ошибка удаления локализации: {{error}}",
     "settings_load_error": "Ошибка загрузки настроек: {{error}}",
     "settings_save_error": "Ошибка сохранения настроек: {{error}}",
+    "check_translation_updates_btn": "Проверить обновления перевода",
+    "checking_translation_updates": "Проверка обновлений перевода...",
+    "translation_updates_available": "Доступны обновления для: {{versions}}",
+    "translations_up_to_date": "Переводы актуальны",
+    "translation_update_error": "Ошибка проверки обновлений: {{error}}",
+    "translation_installed_version": "Установлено: v{{version}}",
+    "translation_server_version": "Доступно: v{{version}}",
+    "no_translation_installed": "Не установлен",
+    "update_translation_btn": "Обновить перевод",
+    "check_for_app_updates_btn": "Проверить обновление приложения",
     "check_for_updates_btn": "Проверить обновления",
     "checking_for_updates": "Проверка обновлений...",
     "update_available": "Доступно обновление: {{version}}",
     "no_updates_found": "Обновлений не найдено.",
     "update_error": "Ошибка проверки обновлений: {{error}}",
-    "install_update_btn": "Установить обновление"
+    "install_update_btn": "Установить обновление",
+    "auto_check_translation_updates": "Автопроверка обновлений перевода"
   }
 }
