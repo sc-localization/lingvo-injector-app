@@ -72,6 +72,7 @@ lingvo-injector-server/
 Serves translation files for specific game branch and language.
 
 **Examples:**
+
 - `/translations/LIVE/ru/global.ini` - Russian translation for LIVE
 - `/translations/PTU/ko/global.ini` - Korean translation for PTU
 - `/translations/HOTFIX/en/global.ini` - English translation for HOTFIX
@@ -83,6 +84,7 @@ Serves translation files for specific game branch and language.
 Returns translation version information with dynamically injected base URL.
 
 **Response:**
+
 ```json
 {
   "baseUrl": "http://localhost:3001/translations",
@@ -103,6 +105,7 @@ Returns translation version information with dynamically injected base URL.
 Returns application update metadata with platform-specific download URLs.
 
 **Response:**
+
 ```json
 {
   "version": "0.0.2",
@@ -127,6 +130,7 @@ Serves application update files.
 ### Language IDs vs Game Codes
 
 **Server uses Language IDs** for organization:
+
 - `ru` - Russian
 - `ko` - Korean
 - `en` - English
@@ -140,6 +144,7 @@ Serves application update files.
 - `es` - Spanish
 
 **Client uses Game Codes** for installation in Star Citizen:
+
 - `korean_(south_korea)` - Both Russian AND Korean (conflict!)
 - `english` - English
 - `chinese_(simplified)` - Chinese
@@ -152,12 +157,14 @@ Serves application update files.
 > Russian and Korean both install to `korean_(south_korea)` folder in the game:
 
 **On Server** (separate):
+
 ```
 translations/LIVE/ru/global.ini    # Russian translation
 translations/LIVE/ko/global.ini    # Korean translation
 ```
 
 **In Game** (same folder):
+
 ```
 StarCitizen/LIVE/data/Localization/korean_(south_korea)/global.ini
 ```
@@ -167,6 +174,7 @@ Only ONE can be active at a time. This is a Star Citizen limitation.
 ## Adding New Translations
 
 1. Create language folder using **language ID**:
+
 ```bash
 mkdir -p translations/LIVE/{language_id}
 mkdir -p translations/PTU/{language_id}
@@ -174,6 +182,7 @@ mkdir -p translations/HOTFIX/{language_id}
 ```
 
 2. Create `global.ini` file in each folder:
+
 ```ini
 # Star Citizen Translation - {Language}
 
@@ -182,6 +191,7 @@ AnotherKey=Another translation
 ```
 
 3. Test by accessing:
+
 ```
 http://localhost:3001/translations/LIVE/{language_id}/global.ini
 ```
@@ -214,18 +224,12 @@ curl http://localhost:3001/translations/LIVE/fr/global.ini
 
 ## Configuration
 
-### Port
+### Environment Variables
 
-Default port is `3001`. Change in `server.js`:
-```javascript
-const port = 3001; // Change this
-```
-
-### Base URLs
-
-Server dynamically injects base URLs into responses:
-- `TRANSLATIONS_BASE_URL`: `http://localhost:{port}/translations`
-- `UPDATES_BASE_URL`: `http://localhost:{port}/updates/app`
+| Variable   | Default                  | Description                                                  |
+| ---------- | ------------------------ | ------------------------------------------------------------ |
+| `PORT`     | `3001`                   | Server listen port                                           |
+| `BASE_URL` | _(derived from request)_ | Translations base URL injected into `versions.json` response |
 
 ## File Format
 
@@ -243,13 +247,67 @@ UI_Exit=Выход
 Game_Welcome=Добро пожаловать, гражданин!
 ```
 
-## Production Deployment
+## Production Deployment (Docker)
 
-1. Update `server.js` with production URLs
-2. Replace `your-signature-here` in latest.json with actual Tauri signature
-3. Place application installer in `updates/app/`
-4. Consider using nginx/Apache as reverse proxy
-5. Enable HTTPS for security
+### Prerequisites
+
+- Docker and Docker Compose installed on your VPS
+
+### Setup
+
+1. Clone the repo and navigate to the server directory:
+
+```bash
+cd server
+```
+
+2. Create a `.env` file (optional, for custom base URL):
+
+```bash
+# Set this to your domain's translations URL
+BASE_URL=https://your-domain.com/translations
+```
+
+If `BASE_URL` is not set, the server derives it from the incoming request's `Host` header.
+
+3. Start the services:
+
+```bash
+docker compose up -d --build
+```
+
+4. Verify:
+
+```bash
+curl http://localhost/versions/versions.json
+curl http://localhost/translations/LIVE/ru/global.ini
+```
+
+### SSL with Certbot
+
+1. Update `nginx/nginx.conf`: replace `your-domain.com` with your actual domain in the commented-out HTTPS block.
+
+2. Obtain certificates:
+
+```bash
+docker compose run --rm certbot certonly --webroot -w /var/www/certbot -d your-domain.com
+```
+
+Or install certbot on the host and use it directly.
+
+3. Uncomment the HTTPS server block in `nginx/nginx.conf` and remove/comment the default HTTP block (keep the ACME challenge location and HTTP-to-HTTPS redirect).
+
+4. Restart nginx:
+
+```bash
+docker compose restart nginx
+```
+
+5. Update the app's API base URL to point to your production server (e.g., `https://your-domain.com`).
+
+### Updating Translations
+
+Translation files are mounted as volumes from `./translations` and `./versions`. Update files on disk and they are served immediately — no container restart needed.
 
 ## Security Notes
 

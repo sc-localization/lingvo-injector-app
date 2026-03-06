@@ -7,7 +7,7 @@ export const fetchVersions = async (): Promise<ServerVersionsResponse> => {
   const serverUrl = `${import.meta.env.VITE_SERVER_URL}/versions/versions.json`;
 
   try {
-    const response = await fetch(serverUrl);
+    const response = await fetch(serverUrl, { cache: 'no-cache' });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch versions: ${response.statusText}`);
