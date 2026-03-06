@@ -24,10 +24,10 @@ runs:
         
         if [ -z "$PREV_TAG" ]; then
           echo "No previous tag found. Generating log from start."
-          CHANGELOG=$(git log --pretty=format:"* %s (%h)" "$CURRENT_TAG")
+          CHANGELOG=$(git log --no-merges --pretty=format:"* %s (%h)" "$CURRENT_TAG")
         else
           echo "Generating log from $PREV_TAG to $CURRENT_TAG"
-          CHANGELOG=$(git log --pretty=format:"* %s (%h)" "$PREV_TAG..$CURRENT_TAG")
+          CHANGELOG=$(git log --no-merges --pretty=format:"* %s (%h)" "$PREV_TAG..$CURRENT_TAG")
         fi
         
         # Prepare multiline string for output
