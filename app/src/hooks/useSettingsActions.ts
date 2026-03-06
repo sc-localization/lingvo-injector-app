@@ -60,8 +60,17 @@ export const useSettingsActions = () => {
     []
   );
 
-  const changeGameVersion = useCallback((version: GameVersion) => {
+  const refreshActiveLanguage = useCallback(async () => {
+    if (settingsStore.selectedGameVersion) {
+      await settingsStore.loadActiveGameLanguage(
+        settingsStore.selectedGameVersion
+      );
+    }
+  }, []);
+
+  const changeGameVersion = useCallback(async (version: GameVersion) => {
     settingsStore.setSelectedGameVersion(version);
+    await settingsStore.loadActiveGameLanguage(version);
   }, []);
 
   const initializeGameFolder = useCallback(
@@ -149,6 +158,18 @@ export const useSettingsActions = () => {
       );
       await saveSettings();
 
+      // Update version status in UI
+      uiStore.setTranslationVersionStatuses({
+        ...uiStore.translationVersionStatuses,
+        [settingsStore.selectedGameVersion]: {
+          installedVersion: serverVersion,
+          serverVersion,
+          hasUpdate: false,
+        },
+      });
+
+      await refreshActiveLanguage();
+
       uiStore.setMessage({
         type: 'success',
         key: 'install_localization_success',
@@ -157,7 +178,7 @@ export const useSettingsActions = () => {
       const errMessage = error instanceof Error ? error.message : String(error);
       showError('install_localization_error', errMessage);
     }
-  }, [settingsStore, uiStore]);
+  }, [settingsStore, uiStore, refreshActiveLanguage]);
 
   const uninstallLocalization = useCallback(async () => {
     if (
@@ -184,6 +205,22 @@ export const useSettingsActions = () => {
       );
       await saveSettings();
 
+      // Update version status in UI
+      const currentStatus =
+        uiStore.translationVersionStatuses[settingsStore.selectedGameVersion];
+      if (currentStatus) {
+        uiStore.setTranslationVersionStatuses({
+          ...uiStore.translationVersionStatuses,
+          [settingsStore.selectedGameVersion]: {
+            ...currentStatus,
+            installedVersion: null,
+            hasUpdate: false,
+          },
+        });
+      }
+
+      await refreshActiveLanguage();
+
       uiStore.setMessage({
         type: 'success',
         key: 'remove_localization_success',
@@ -192,7 +229,7 @@ export const useSettingsActions = () => {
       const errMessage = error instanceof Error ? error.message : String(error);
       showError('remove_localization_error', errMessage);
     }
-  }, [settingsStore, uiStore]);
+  }, [settingsStore, uiStore, refreshActiveLanguage]);
 
   return {
     loadSettings,
@@ -204,5 +241,6 @@ export const useSettingsActions = () => {
     selectGameFolder,
     installLocalization,
     uninstallLocalization,
+    refreshActiveLanguage,
   };
 };

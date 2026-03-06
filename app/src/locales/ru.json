@@ -39,6 +39,9 @@
     "no_updates_found": "Обновлений не найдено.",
     "update_error": "Ошибка проверки обновлений: {{error}}",
     "install_update_btn": "Установить обновление",
-    "auto_check_translation_updates": "Автопроверка обновлений перевода"
+    "auto_check_translation_updates": "Автопроверка обновлений перевода",
+    "active_game_language": "Активный язык игры: {{language}}",
+    "no_active_language": "Язык не настроен",
+    "active_language_mismatch_warning": "Выбранный перевод отличается от активного языка игры. Переустановите для переключения."
   }
 }

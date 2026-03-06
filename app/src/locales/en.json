@@ -39,6 +39,9 @@
     "no_updates_found": "No updates found.",
     "update_error": "Error checking for updates: {{error}}",
     "install_update_btn": "Install Update",
-    "auto_check_translation_updates": "Auto-check translation updates"
+    "auto_check_translation_updates": "Auto-check translation updates",
+    "active_game_language": "Active game language: {{language}}",
+    "no_active_language": "No language configured",
+    "active_language_mismatch_warning": "Selected translation differs from active game language. Reinstall to switch."
   }
 }

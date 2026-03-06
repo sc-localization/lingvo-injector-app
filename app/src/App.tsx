@@ -25,6 +25,7 @@ const App = observer(() => {
     selectGameFolder,
     installLocalization,
     uninstallLocalization,
+    refreshActiveLanguage,
   } = useSettingsActions();
 
   const { checkAppUpdates, installUpdate } = useUpdateActions();
@@ -36,6 +37,7 @@ const App = observer(() => {
     const init = async () => {
       await Promise.all([loadSettings(), loadServerVersions()]);
       await initializeGameFolder(settingsStore.baseGameFolder);
+      await refreshActiveLanguage();
       checkAppUpdates();
       checkTranslationUpdates();
     };
@@ -48,6 +50,7 @@ const App = observer(() => {
     settingsStore.baseGameFolder,
     checkAppUpdates,
     checkTranslationUpdates,
+    refreshActiveLanguage,
   ]);
 
   const currentVersionStatus =
@@ -120,6 +123,24 @@ const App = observer(() => {
           })}
         </p>
       )}
+
+      <p style={{ fontSize: '0.85em', color: '#888' }}>
+        {settingsStore.activeGameLanguageName
+          ? t('active_game_language', {
+              language: settingsStore.activeGameLanguageName,
+            })
+          : t('no_active_language')}
+      </p>
+
+      {settingsStore.activeGameLanguageName &&
+        settingsStore.translationLanguageCode !==
+          settingsStore.activeGameLanguageCodes[
+            settingsStore.selectedGameVersion
+          ] && (
+          <p style={{ fontSize: '0.85em', color: 'orange' }}>
+            {t('active_language_mismatch_warning')}
+          </p>
+        )}
 
       <MessageDisplay
         message={

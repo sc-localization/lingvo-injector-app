@@ -17,6 +17,7 @@ import {
   tryAutoFindBaseFolder,
   writeSettings,
 } from '../services/settingsService';
+import { readLanguageConfig } from '../services/localizationService';
 import { RootStore } from './RootStore';
 import { translationLanguages } from '../constants';
 import { fetchVersions } from '../api/translationApi';
@@ -32,6 +33,7 @@ export class SettingsStore {
   serverVersions: ServerVersionsResponse | null = null;
   installedTranslations: InstalledTranslations = {};
   autoCheckTranslationUpdates: boolean = false;
+  activeGameLanguageCodes: Partial<Record<GameVersion, string | null>> = {};
 
   constructor(root: RootStore) {
     this.root = root;
@@ -44,6 +46,13 @@ export class SettingsStore {
       (lang) => lang.id === this.selectedTranslationLanguage
     );
     return language?.code ?? 'english';
+  }
+
+  get activeGameLanguageName(): string | null {
+    const code = this.activeGameLanguageCodes[this.selectedGameVersion];
+    if (!code) return null;
+    const lang = translationLanguages.find((l) => l.code === code);
+    return lang?.name ?? code;
   }
 
   // Computed getter for available translation languages for the selected version
@@ -120,6 +129,21 @@ export class SettingsStore {
     const copy = { ...this.installedTranslations };
     delete copy[key];
     this.installedTranslations = copy;
+  };
+
+  loadActiveGameLanguage = async (version: GameVersion) => {
+    if (!this.baseGameFolder) return;
+    try {
+      const code = await readLanguageConfig(this.baseGameFolder, version);
+      runInAction(() => {
+        this.activeGameLanguageCodes = {
+          ...this.activeGameLanguageCodes,
+          [version]: code,
+        };
+      });
+    } catch (error) {
+      console.error('Failed to read active game language:', error);
+    }
   };
 
   loadServerVersions = async () => {
