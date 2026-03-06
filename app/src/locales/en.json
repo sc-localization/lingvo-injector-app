@@ -33,7 +33,6 @@
     "no_translation_installed": "Not installed",
     "update_translation_btn": "Update Translation",
     "check_for_app_updates_btn": "Check App Update",
-    "check_for_updates_btn": "Check for Updates",
     "checking_for_updates": "Checking for updates...",
     "update_available": "Update available: {{version}}",
     "no_updates_found": "No updates found.",

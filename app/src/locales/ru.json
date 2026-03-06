@@ -33,7 +33,6 @@
     "no_translation_installed": "Не установлен",
     "update_translation_btn": "Обновить перевод",
     "check_for_app_updates_btn": "Проверить обновление приложения",
-    "check_for_updates_btn": "Проверить обновления",
     "checking_for_updates": "Проверка обновлений...",
     "update_available": "Доступно обновление: {{version}}",
     "no_updates_found": "Обновлений не найдено.",
