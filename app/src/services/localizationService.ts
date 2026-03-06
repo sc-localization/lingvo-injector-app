@@ -55,6 +55,27 @@ export const removeLocalization = async (
  * @param path - File path
  * @param content - File content
  */
+/**
+ * Read g_language value from user.cfg for a given version
+ */
+export const readLanguageConfig = async (
+  baseFolder: BaseGameFolder,
+  version: GameVersion
+): Promise<string | null> => {
+  try {
+    return await invoke<string | null>('read_language_config', {
+      baseFolderPath: baseFolder,
+      selectedVersion: version,
+    });
+  } catch (error) {
+    const errMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to read language config: ${errMessage}`);
+  }
+};
+
+/**
+ * Write text content to a file
+ */
 export const writeTextFile = async (
   path: string,
   content: string

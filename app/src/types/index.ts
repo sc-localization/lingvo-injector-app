@@ -20,8 +20,39 @@ export type GameVersion = 'LIVE' | 'PTU' | 'HOTFIX';
 export type BaseGameFolder = string | null;
 export type AvailableGameVersions = readonly GameVersion[];
 
+export type LanguageVersionInfo = {
+  version: string;
+};
+
+export type ServerVersionInfo = {
+  languages: Record<string, LanguageVersionInfo>;
+};
+
+export type ServerVersionsResponse = Record<string, ServerVersionInfo> & {
+  baseUrl?: string;
+};
+
+export type InstalledTranslationInfo = {
+  version: string;
+  installedAt: string; // ISO date
+  languageId: TranslationLanguageId;
+};
+export type InstalledTranslations = Record<string, InstalledTranslationInfo>;
+
+export type TranslationVersionStatus = {
+  installedVersion: string | null;
+  serverVersion: string;
+  hasUpdate: boolean;
+};
+export type TranslationVersionStatuses = Record<
+  string,
+  TranslationVersionStatus
+>;
+
 export type AppSettings = {
   app_language: AppLanguageId;
   translation_language: TranslationLanguageId;
   base_game_folder: BaseGameFolder;
+  installed_translations: InstalledTranslations;
+  auto_check_translation_updates: boolean;
 };

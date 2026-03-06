@@ -1,18 +1,22 @@
 // server.js
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-const fs = require("fs");
+import express from "express";
+import cors from "cors";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 const VERSIONS_FILE_PATH = path.join(__dirname, "versions", "versions.json");
-const TRANSLATIONS_BASE_URL = `http://localhost:${port}/translations`;
+const TRANSLATIONS_DIR = path.join(__dirname, "translations");
 
 // Middleware
 app.use(cors());
-app.use("/translations", express.static(path.join(__dirname, "translations")));
+app.use("/translations", express.static(TRANSLATIONS_DIR));
 
 app.get("/versions/versions.json", (req, res) => {
   try {
@@ -22,7 +26,11 @@ app.get("/versions/versions.json", (req, res) => {
 
     const versionsData = fs.readFileSync(VERSIONS_FILE_PATH, "utf-8");
     const versionsJson = JSON.parse(versionsData);
-    versionsJson.baseUrl = TRANSLATIONS_BASE_URL;
+
+    const baseUrl =
+      process.env.BASE_URL ||
+      `${req.protocol}://localhost:${port}/translations`;
+    versionsJson.baseUrl = baseUrl;
 
     res.json(versionsJson);
   } catch (error) {

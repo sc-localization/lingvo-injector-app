@@ -1,6 +1,30 @@
 use regex::Regex;
 use std::{env, fs, path::PathBuf};
 
+/// Validate that a user-supplied path component (e.g. version name, language code)
+/// does not contain path traversal sequences or absolute path indicators.
+fn validate_path_component(component: &str, label: &str) -> Result<(), String> {
+    let path = PathBuf::from(component);
+
+    if path.is_absolute() {
+        return Err(format!("{} must not be an absolute path", label));
+    }
+
+    for part in path.components() {
+        match part {
+            std::path::Component::Normal(_) => {}
+            _ => {
+                return Err(format!(
+                    "{} contains invalid path component: {:?}",
+                    label, part
+                ));
+            }
+        }
+    }
+
+    Ok(())
+}
+
 /// Get the path to the configuration file (config.json)
 fn get_config_path() -> Result<PathBuf, String> {
     let mut exe_path =
@@ -171,6 +195,8 @@ fn set_language_config(
     selected_language_code: String,
     selected_version: String,
 ) -> Result<String, String> {
+    validate_path_component(&selected_version, "selected_version")?;
+    validate_path_component(&selected_language_code, "selected_language_code")?;
     let base_path = PathBuf::from(&base_folder_path);
     let version_folder = base_path.join(&selected_version);
 
@@ -219,6 +245,29 @@ fn set_language_config(
     Ok(new_loc_folder_path.to_string_lossy().to_string())
 }
 
+/// Read g_language value from user.cfg for a given version
+#[tauri::command]
+fn read_language_config(
+    base_folder_path: String,
+    selected_version: String,
+) -> Result<Option<String>, String> {
+    validate_path_component(&selected_version, "selected_version")?;
+    let base_path = PathBuf::from(&base_folder_path);
+    let user_cfg_path = base_path.join(&selected_version).join("user.cfg");
+
+    if !user_cfg_path.exists() {
+        return Ok(None);
+    }
+
+    let content = fs::read_to_string(&user_cfg_path)
+        .map_err(|e| format!("Failed to read user.cfg: {}", e))?;
+
+    let re = Regex::new(r"(?m)^g_language\s*=\s*(.+?)\s*$")
+        .map_err(|e| format!("Regex compilation failed: {}", e))?;
+
+    Ok(re.captures(&content).map(|c| c[1].to_string()))
+}
+
 /// Remove localization and user.cfg clear
 #[tauri::command]
 fn remove_localization(
@@ -226,6 +275,8 @@ fn remove_localization(
     selected_language_code: String,
     selected_version: String,
 ) -> Result<(), String> {
+    validate_path_component(&selected_version, "selected_version")?;
+    validate_path_component(&selected_language_code, "selected_language_code")?;
     let base_path = PathBuf::from(&base_folder_path);
     let version_folder = base_path.join(&selected_version);
 
@@ -285,6 +336,7 @@ pub fn run() {
             read_settings,
             write_settings,
             remove_localization,
+            read_language_config,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

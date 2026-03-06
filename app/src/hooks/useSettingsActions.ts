@@ -35,6 +35,10 @@ export const useSettingsActions = () => {
     }
   }, []);
 
+  const loadServerVersions = useCallback(async () => {
+    await settingsStore.loadServerVersions();
+  }, []);
+
   const saveSettings = useCallback(async () => {
     const result = await settingsStore.saveSettings();
 
@@ -56,21 +60,24 @@ export const useSettingsActions = () => {
     []
   );
 
-  const changeGameVersion = useCallback((version: GameVersion) => {
+  const refreshActiveLanguage = useCallback(async () => {
+    if (settingsStore.selectedGameVersion) {
+      await settingsStore.loadActiveGameLanguage(
+        settingsStore.selectedGameVersion
+      );
+    }
+  }, []);
+
+  const changeGameVersion = useCallback(async (version: GameVersion) => {
     settingsStore.setSelectedGameVersion(version);
+    await settingsStore.loadActiveGameLanguage(version);
   }, []);
 
   const initializeGameFolder = useCallback(
     async (initialPath: BaseGameFolder = null) => {
       const result = await settingsStore.initGameFolder(initialPath);
 
-      if (result.success && result.folder) {
-        uiStore.setMessage({
-          type: 'info',
-          key: 'game_folder_found',
-          payload: { folder: result.folder },
-        });
-      } else if (!result.success && !result.error) {
+      if (!result.success && !result.error) {
         uiStore.setMessage({
           type: 'info',
           key: 'game_folder_not_found',
@@ -139,6 +146,30 @@ export const useSettingsActions = () => {
       // 3. Write translation file to localization folder
       await writeTextFile(`${locPath}/${fileName}`, translationContent);
 
+      // 4. Record installed translation version
+      const serverVersion =
+        settingsStore.serverVersions?.[settingsStore.selectedGameVersion]
+          ?.languages?.[settingsStore.selectedTranslationLanguage]?.version ??
+        'unknown';
+      settingsStore.setInstalledTranslation(
+        settingsStore.selectedGameVersion,
+        settingsStore.selectedTranslationLanguage,
+        serverVersion
+      );
+      await saveSettings();
+
+      // Update version status in UI
+      uiStore.setTranslationVersionStatuses({
+        ...uiStore.translationVersionStatuses,
+        [settingsStore.selectedGameVersion]: {
+          installedVersion: serverVersion,
+          serverVersion,
+          hasUpdate: false,
+        },
+      });
+
+      await refreshActiveLanguage();
+
       uiStore.setMessage({
         type: 'success',
         key: 'install_localization_success',
@@ -147,7 +178,7 @@ export const useSettingsActions = () => {
       const errMessage = error instanceof Error ? error.message : String(error);
       showError('install_localization_error', errMessage);
     }
-  }, [settingsStore, uiStore]);
+  }, [settingsStore, uiStore, refreshActiveLanguage]);
 
   const uninstallLocalization = useCallback(async () => {
     if (
@@ -168,6 +199,28 @@ export const useSettingsActions = () => {
         settingsStore.selectedGameVersion
       );
 
+      settingsStore.removeInstalledTranslation(
+        settingsStore.selectedGameVersion,
+        settingsStore.selectedTranslationLanguage
+      );
+      await saveSettings();
+
+      // Update version status in UI
+      const currentStatus =
+        uiStore.translationVersionStatuses[settingsStore.selectedGameVersion];
+      if (currentStatus) {
+        uiStore.setTranslationVersionStatuses({
+          ...uiStore.translationVersionStatuses,
+          [settingsStore.selectedGameVersion]: {
+            ...currentStatus,
+            installedVersion: null,
+            hasUpdate: false,
+          },
+        });
+      }
+
+      await refreshActiveLanguage();
+
       uiStore.setMessage({
         type: 'success',
         key: 'remove_localization_success',
@@ -176,10 +229,11 @@ export const useSettingsActions = () => {
       const errMessage = error instanceof Error ? error.message : String(error);
       showError('remove_localization_error', errMessage);
     }
-  }, [settingsStore, uiStore]);
+  }, [settingsStore, uiStore, refreshActiveLanguage]);
 
   return {
     loadSettings,
+    loadServerVersions,
     initializeGameFolder,
     changeAppLanguage,
     changeTranslationLanguage,
@@ -187,5 +241,6 @@ export const useSettingsActions = () => {
     selectGameFolder,
     installLocalization,
     uninstallLocalization,
+    refreshActiveLanguage,
   };
 };

@@ -1,0 +1,38 @@
+.folderPath {
+  font-size: 0.9em;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.warningText {
+  color: orange;
+}
+
+.versionStatus {
+  font-size: 0.85em;
+  color: #888;
+}
+
+.activeLanguage {
+  font-size: 0.85em;
+  color: #888;
+}
+
+.mismatchWarning {
+  font-size: 0.85em;
+  color: orange;
+}
+
+.section {
+  margin-top: 20px;
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+}
+
+.autoCheckLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 0.9em;
+}
