@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { appLanguages } from './constants';
 import { useStores } from './stores/RootStore';
+import styles from './App.module.scss';
 import Select from './components/Select/Select';
 import { useSettingsActions } from './hooks/useSettingsActions';
 import { useUpdateActions } from './hooks/useUpdateActions';
@@ -64,7 +65,7 @@ const App = observer(() => {
         <h1>{t('title')}</h1>
       </header>
 
-      <p style={{ fontSize: '0.9em', color: '#666', marginBottom: '5px' }}>
+      <p className={styles.folderPath}>
         {settingsStore.baseGameFolder
           ? t('selected_folder', { folder: settingsStore.baseGameFolder })
           : t('folder_not_selected')}
@@ -92,7 +93,7 @@ const App = observer(() => {
       ) : (
         settingsStore.selectedGameVersion &&
         settingsStore.serverVersions && (
-          <p style={{ color: 'orange' }}>{t('no_translations_available')}</p>
+          <p className={styles.warningText}>{t('no_translations_available')}</p>
         )
       )}
 
@@ -111,7 +112,7 @@ const App = observer(() => {
       )}
 
       {currentVersionStatus && (
-        <p style={{ fontSize: '0.85em', color: '#888' }}>
+        <p className={styles.versionStatus}>
           {currentVersionStatus.installedVersion
             ? t('translation_installed_version', {
                 version: currentVersionStatus.installedVersion,
@@ -124,7 +125,7 @@ const App = observer(() => {
         </p>
       )}
 
-      <p style={{ fontSize: '0.85em', color: '#888' }}>
+      <p className={styles.activeLanguage}>
         {settingsStore.activeGameLanguageName
           ? t('active_game_language', {
               language: settingsStore.activeGameLanguageName,
@@ -137,7 +138,7 @@ const App = observer(() => {
           settingsStore.activeGameLanguageCodes[
             settingsStore.selectedGameVersion
           ] && (
-          <p style={{ fontSize: '0.85em', color: 'orange' }}>
+          <p className={styles.mismatchWarning}>
             {t('active_language_mismatch_warning')}
           </p>
         )}
@@ -179,13 +180,7 @@ const App = observer(() => {
         </>
       )}
 
-      <div
-        style={{
-          marginTop: '20px',
-          borderTop: '1px solid #ccc',
-          paddingTop: '10px',
-        }}
-      >
+      <div className={styles.section}>
         <Button
           onClick={checkTranslationUpdates}
           disabled={uiStore.isCheckingTranslationUpdates}
@@ -202,15 +197,7 @@ const App = observer(() => {
           {t('update_translation_btn')}
         </Button>
 
-        <label
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            marginTop: '8px',
-            fontSize: '0.9em',
-          }}
-        >
+        <label className={styles.autoCheckLabel}>
           <input
             type="checkbox"
             checked={settingsStore.autoCheckTranslationUpdates}
@@ -222,13 +209,7 @@ const App = observer(() => {
         </label>
       </div>
 
-      <div
-        style={{
-          marginTop: '20px',
-          borderTop: '1px solid #ccc',
-          paddingTop: '10px',
-        }}
-      >
+      <div className={styles.section}>
         <Button onClick={checkAppUpdates} disabled={uiStore.isCheckingUpdates}>
           {uiStore.isCheckingUpdates
             ? t('checking_for_updates')
