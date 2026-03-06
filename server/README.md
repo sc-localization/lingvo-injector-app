@@ -1,13 +1,14 @@
 # Lingvo Injector Server
 
-HTTP server for serving Star Citizen translation files and application updates.
+HTTP server for serving Star Citizen translation files and version metadata.
 
 ## Features
 
-- 🌐 Serves translation files for all game versions (LIVE, PTU, HOTFIX)
-- 📦 Hosts application updates with metadata
-- 🔄 CORS-enabled for desktop application access
-- 📁 Static file serving with Express.js
+- Serves translation files for all game versions (LIVE, PTU, HOTFIX)
+- Dynamic language discovery per game version (scans filesystem)
+- Configurable base URL for production deployment
+- CORS-enabled for desktop application access
+- Docker + nginx deployment ready
 
 ## Quick Start
 
@@ -45,22 +46,21 @@ npm run lint:fix
 ## Server Structure
 
 ```
-lingvo-injector-server/
-├── server.js          # Main Express server
-├── translations/      # Translation files organized by language ID
+server/
+├── server.js               # Main Express server
+├── Dockerfile              # Container image
+├── docker-compose.yml      # Docker Compose (app + nginx)
+├── nginx/
+│   └── nginx.conf          # Reverse proxy config
+├── translations/           # Translation files by version/language
 │   ├── LIVE/
-│   │   ├── ru/global.ini     # Russian
-│   │   ├── ko/global.ini     # Korean
-│   │   ├── en/global.ini     # English
+│   │   ├── ru/global.ini
+│   │   ├── en/global.ini
 │   │   └── ...
 │   ├── PTU/
 │   └── HOTFIX/
-├── versions/
-│   └── versions.json  # Translation version metadata
-└── updates/
-    └── app/
-        ├── latest.json              # Update metadata
-        └── lingvo-injector-app.exe  # Application installer
+└── versions/
+    └── versions.json       # Translation version metadata
 ```
 
 ## API Endpoints
@@ -97,33 +97,6 @@ Returns translation version information with dynamically injected base URL.
   "HOTFIX": { ... }
 }
 ```
-
-### Application Updates
-
-**GET** `/updates/app/latest.json`
-
-Returns application update metadata with platform-specific download URLs.
-
-**Response:**
-
-```json
-{
-  "version": "0.0.2",
-  "notes": "New features and bug fixes",
-  "pub_date": "2025-10-26T09:00:00Z",
-  "platforms": {
-    "windows-x86_64": {
-      "url": "http://localhost:3001/updates/app/lingvo-injector-app.exe",
-      "signature": "your-signature-here",
-      "version": "0.0.2"
-    }
-  }
-}
-```
-
-**GET** `/updates/app/:file`
-
-Serves application update files.
 
 ## Translation File Structure
 
@@ -318,14 +291,10 @@ Translation files are mounted as volumes from `./translations` and `./versions`.
 
 ## Tech Stack
 
-- Node.js
+- Node.js 22
 - Express.js 5.x
-- CORS middleware
+- Docker + nginx
 
 ## Related Projects
 
-- [Lingvo Injector App](../lingvo-injector-app/) - Desktop client application
-
-## Support
-
-For translation contributions, see the [translations README](translations/README.md).
+- [Lingvo Injector App](../app/) - Desktop client application
