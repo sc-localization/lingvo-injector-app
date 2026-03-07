@@ -3,6 +3,8 @@ import styles from './DataMatrix.module.scss';
 
 const CELL_SIZE = 20;
 const ROW_COUNT = 15;
+const CELLS_TO_CLEAR_PER_FRAME = 20;
+const CELLS_TO_ANIMATE_PER_FRAME = 15;
 
 const DataMatrix = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -35,24 +37,24 @@ const DataMatrix = () => {
         return;
       }
 
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < CELLS_TO_CLEAR_PER_FRAME; i++) {
         const cell = cells[Math.floor(Math.random() * cells.length)];
         cell.style.opacity = '0';
         cell.style.background = 'transparent';
       }
 
-      for (let i = 0; i < 15; i++) {
+      for (let i = 0; i < CELLS_TO_ANIMATE_PER_FRAME; i++) {
         const cell = cells[Math.floor(Math.random() * cells.length)];
         const rand = Math.random();
 
         cell.style.opacity = String(Math.random() * 0.8 + 0.2);
 
         if (rand > 0.98) {
-          cell.style.background = '#ff0033';
+          cell.style.background = 'var(--dm-danger)';
         } else if (rand > 0.8) {
-          cell.style.background = '#ffffff';
+          cell.style.background = 'var(--dm-accent)';
         } else {
-          cell.style.background = '#333333';
+          cell.style.background = 'var(--dm-dark)';
         }
       }
 

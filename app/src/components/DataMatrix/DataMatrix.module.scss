@@ -1,5 +1,13 @@
 @use '../../styles/variables' as *;
 
+:global {
+  :root {
+    --dm-danger: #{$danger};
+    --dm-accent: #{$accent};
+    --dm-dark: #{$fg-dark};
+  }
+}
+
 .matrix {
   position: fixed;
   top: 0;
