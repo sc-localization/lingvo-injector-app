@@ -1,0 +1,71 @@
+@use '../../styles/variables' as *;
+
+.crossGrid {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent calc(100% - 1px),
+      $fg-dark calc(100% - 1px)
+    ),
+    linear-gradient(
+      0deg,
+      transparent calc(100% - 1px),
+      $fg-dark calc(100% - 1px)
+    );
+  background-size: 100px 100px;
+  background-position: center;
+  opacity: 0.3;
+  z-index: -10; // Move to background
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(
+      circle at center,
+      $bg 2px,
+      transparent 3px
+    );
+    background-size: 100px 100px;
+    background-position: center;
+    pointer-events: none;
+  }
+}
+
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.2)
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 100; // Keep scanlines on top but they are transparent
+}
+
+.crtOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, transparent 60%, rgba(0, 0, 0, 0.8) 100%);
+  pointer-events: none;
+  z-index: 99; // Keep overlay on top but it's transparent
+}

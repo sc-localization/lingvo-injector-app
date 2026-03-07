@@ -1,0 +1,5 @@
+@use 'sass:color';
+
+@function fade($color, $amount) {
+  @return rgba($color, $amount);
+}

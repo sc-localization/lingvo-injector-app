@@ -1,0 +1,98 @@
+@use '../../styles/variables' as *;
+
+.group {
+  margin-bottom: 15px;
+}
+
+.label {
+  display: block;
+  font-size: 0.75rem;
+  color: #555;
+  margin-bottom: 5px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.wrapper {
+  position: relative;
+}
+
+.select {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid $border;
+  border-radius: 0;
+  color: $accent;
+  padding: 8px 10px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  outline: none;
+  transition: border-color 0.2s;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+
+  &:focus,
+  &.open {
+    border-color: $accent;
+  }
+}
+
+.selectedText {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arrow {
+  font-size: 0.6rem;
+  color: $fg;
+  margin-left: 10px;
+  flex-shrink: 0;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.95);
+  border: 1px solid $border;
+  border-top: none;
+  max-height: 200px;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $fg-dark;
+  }
+}
+
+.option {
+  padding: 8px 10px;
+  color: $fg;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: $accent;
+  }
+
+  &.active {
+    color: $accent;
+    background: rgba(255, 255, 255, 0.05);
+  }
+}

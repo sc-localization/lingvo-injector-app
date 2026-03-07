@@ -19,13 +19,16 @@ export const useSettingsActions = () => {
   const { t } = useTranslation();
   const { settingsStore, uiStore } = useStores();
 
-  const showError = useCallback((key: string, error?: string) => {
-    uiStore.setMessage({
-      type: 'error',
-      key: key,
-      payload: { error: error || '' },
-    });
-  }, []);
+  const showError = useCallback(
+    (key: string, error?: string) => {
+      uiStore.setMessage({
+        type: 'error',
+        key: key,
+        payload: { error: error || '' },
+      });
+    },
+    [uiStore]
+  );
 
   const loadSettings = useCallback(async () => {
     const result = await settingsStore.loadSettings();
@@ -33,11 +36,11 @@ export const useSettingsActions = () => {
     if (!result.success && result.error) {
       showError('settings_load_error', result.error);
     }
-  }, []);
+  }, [settingsStore, showError]);
 
   const loadServerVersions = useCallback(async () => {
     await settingsStore.loadServerVersions();
-  }, []);
+  }, [settingsStore]);
 
   const saveSettings = useCallback(async () => {
     const result = await settingsStore.saveSettings();
@@ -45,19 +48,27 @@ export const useSettingsActions = () => {
     if (!result.success && result.error) {
       showError('settings_save_error', result.error);
     }
-  }, []);
+  }, [settingsStore, showError]);
 
-  const changeAppLanguage = useCallback(async (languageId: AppLanguageId) => {
-    settingsStore.setAppLanguage(languageId);
-    await saveSettings();
-  }, []);
+  const changeAppLanguage = useCallback(
+    async (languageId: AppLanguageId) => {
+      settingsStore.setAppLanguage(languageId);
+      uiStore.addLogEntry('system', `App language changed to ${languageId}`);
+      await saveSettings();
+    },
+    [settingsStore, uiStore, saveSettings]
+  );
 
   const changeTranslationLanguage = useCallback(
     async (languageId: TranslationLanguageId) => {
       settingsStore.setTranslationLanguage(languageId);
+      uiStore.addLogEntry(
+        'system',
+        `Translation language changed to ${languageId}`
+      );
       await saveSettings();
     },
-    []
+    [settingsStore, uiStore, saveSettings]
   );
 
   const refreshActiveLanguage = useCallback(async () => {
@@ -66,12 +77,16 @@ export const useSettingsActions = () => {
         settingsStore.selectedGameVersion
       );
     }
-  }, []);
+  }, [settingsStore]);
 
-  const changeGameVersion = useCallback(async (version: GameVersion) => {
-    settingsStore.setSelectedGameVersion(version);
-    await settingsStore.loadActiveGameLanguage(version);
-  }, []);
+  const changeGameVersion = useCallback(
+    async (version: GameVersion) => {
+      settingsStore.setSelectedGameVersion(version);
+      uiStore.addLogEntry('system', `Game version node switched to ${version}`);
+      await settingsStore.loadActiveGameLanguage(version);
+    },
+    [settingsStore, uiStore]
+  );
 
   const initializeGameFolder = useCallback(
     async (initialPath: BaseGameFolder = null) => {
@@ -86,7 +101,7 @@ export const useSettingsActions = () => {
         showError('initialize_game_folder_error', result.error);
       }
     },
-    []
+    [settingsStore, uiStore, showError]
   );
 
   const selectGameFolder = useCallback(async () => {
@@ -94,6 +109,10 @@ export const useSettingsActions = () => {
 
     try {
       uiStore.setDialogOpen(true);
+      uiStore.addLogEntry(
+        'system',
+        'Requesting OS dialog for folder selection...'
+      );
       const selectedPath = await open({
         multiple: false,
         directory: true,
@@ -101,6 +120,7 @@ export const useSettingsActions = () => {
       });
 
       if (selectedPath) {
+        uiStore.addLogEntry('success', `Selected folder: ${selectedPath}`);
         await initializeGameFolder(selectedPath);
       }
     } catch (error) {
@@ -136,7 +156,6 @@ export const useSettingsActions = () => {
       );
 
       // 2. Download translation file from server
-      // Use language ID (ru, ko, etc.) for server path, not the game code
       const fileName = 'global.ini';
       const translationContent = await fetchTranslation(
         settingsStore.selectedGameVersion,
@@ -178,7 +197,7 @@ export const useSettingsActions = () => {
       const errMessage = error instanceof Error ? error.message : String(error);
       showError('install_localization_error', errMessage);
     }
-  }, [settingsStore, uiStore, refreshActiveLanguage]);
+  }, [settingsStore, uiStore, saveSettings, showError, refreshActiveLanguage]);
 
   const uninstallLocalization = useCallback(async () => {
     if (
@@ -229,7 +248,7 @@ export const useSettingsActions = () => {
       const errMessage = error instanceof Error ? error.message : String(error);
       showError('remove_localization_error', errMessage);
     }
-  }, [settingsStore, uiStore, refreshActiveLanguage]);
+  }, [settingsStore, uiStore, saveSettings, showError, refreshActiveLanguage]);
 
   return {
     loadSettings,
