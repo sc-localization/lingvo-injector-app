@@ -1,0 +1,87 @@
+@use '../../styles/variables' as *;
+@use '../../styles/animations';
+
+.terminal {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid $fg-dark;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-size: 0.75rem;
+}
+
+.header {
+  background: $fg-dark;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.content {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $fg-dark;
+  }
+}
+
+.entry {
+  opacity: 0.9;
+  word-wrap: break-word;
+  line-height: 1.2;
+
+  &::before {
+    content: '>';
+    margin-right: 8px;
+    color: $fg-dim;
+  }
+
+  &.system {
+    color: $fg-dim;
+  }
+  &.success {
+    color: $accent;
+  }
+  &.error {
+    color: $danger;
+  }
+  &.info {
+    color: #ffcc00;
+  }
+}
+
+.footer {
+  padding: 8px 10px;
+  border-top: 1px solid $fg-dark;
+  background: #000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: $fg;
+  white-space: nowrap;
+}
+
+.cursor {
+  display: inline-block;
+  width: 6px;
+  height: 12px;
+  background: $accent;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}

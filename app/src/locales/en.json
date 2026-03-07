@@ -1,9 +1,9 @@
 {
   "translation": {
     "title": "Star Citizen Localization Manager",
-    "select_app_language": "Select application language:",
-    "select_translation_language": "Select translation language:",
-    "select_game_version": "Select game version:",
+    "select_app_language": "App language",
+    "select_translation_language": "Translation language",
+    "select_game_version": "Game version",
     "initialize_game_folder_error": "Error initializing base folder: {{error}}",
     "selected_folder": "Selected folder: {{folder}}",
     "folder_not_selected": "No folder selected",

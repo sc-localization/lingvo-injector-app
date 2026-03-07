@@ -3,6 +3,11 @@ import { Update } from '@tauri-apps/plugin-updater';
 import type { Message, TranslationVersionStatuses } from '../types';
 import { RootStore } from './RootStore';
 
+export type LogEntry = {
+  type: 'system' | 'success' | 'error' | 'info';
+  text: string;
+};
+
 export class UIStore {
   root: RootStore;
 
@@ -13,6 +18,10 @@ export class UIStore {
   isCheckingUpdates: boolean = false;
   translationVersionStatuses: TranslationVersionStatuses = {};
   isCheckingTranslationUpdates: boolean = false;
+  logEntries: LogEntry[] = [
+    { type: 'system', text: 'Booting LINGVO kernel...' },
+    { type: 'success', text: 'System ready.' },
+  ];
 
   constructor(root: RootStore) {
     this.root = root;
@@ -29,6 +38,10 @@ export class UIStore {
 
   setMessage = (message: Message) => {
     this.message = message;
+    if (message) {
+      // Automatically log messages to the terminal
+      this.addLogEntry(message.type, message.key); // Using key for now, we'll translate in component if needed or just pass text
+    }
   };
 
   clearMessage = () => {
@@ -49,5 +62,9 @@ export class UIStore {
 
   setIsCheckingTranslationUpdates = (checking: boolean) => {
     this.isCheckingTranslationUpdates = checking;
+  };
+
+  addLogEntry = (type: LogEntry['type'], text: string) => {
+    this.logEntries.push({ type, text });
   };
 }

@@ -1,9 +1,9 @@
 {
   "translation": {
     "title": "Менеджер локализации Star Citizen",
-    "select_app_language": "Выберите язык приложения:",
-    "select_translation_language": "Выберите язык перевода:",
-    "select_game_version": "Выберите версию игры:",
+    "select_app_language": "Язык приложения",
+    "select_translation_language": "Язык перевода",
+    "select_game_version": "Версия игры",
     "initialize_game_folder_error": "Ошибка инициализации базовой папки: {{error}}",
     "selected_folder": "Выбранная папка: {{folder}}",
     "folder_not_selected": "Папка не выбрана",

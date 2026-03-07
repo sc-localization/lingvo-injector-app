@@ -1,0 +1,69 @@
+@use '../../styles/variables' as *;
+
+.body {
+  font-size: 0.9rem;
+}
+
+.label {
+  display: block;
+  font-size: 0.75rem;
+  color: $fg-dim;
+  margin-bottom: 5px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.value {
+  color: $accent;
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: normal;
+  color: $accent;
+}
+
+.subtitle {
+  font-size: 0.65rem;
+  color: $fg-dim;
+  letter-spacing: 3px;
+  margin-top: 5px;
+  text-transform: uppercase;
+}
+
+.status {
+  font-size: 0.75rem;
+  color: $fg-dim;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.path {
+  font-size: 0.8rem;
+  word-break: break-all;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  border-left: 3px solid $accent;
+  color: $fg;
+}
+
+// Colors
+.default {
+  color: $fg;
+}
+.dim {
+  color: $fg-dim;
+}
+.accent {
+  color: $accent;
+}
+.danger {
+  color: $danger;
+}
+.warning {
+  color: #ffcc00;
+}
