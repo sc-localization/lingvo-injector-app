@@ -48,14 +48,14 @@ npm run lint:fix
 ```
 server/
 ├── server.js               # Main Express server
-├── Dockerfile              # Container image
+├── Dockerfile              # Container image (Node 22-Alpine)
 ├── docker-compose.yml      # Docker Compose (app + nginx)
 ├── nginx/
 │   └── nginx.conf          # Reverse proxy config
 ├── translations/           # Translation files by version/language
 │   ├── LIVE/
 │   │   ├── ru/global.ini
-│   │   ├── en/global.ini
+│   │   ├── de/global.ini
 │   │   └── ...
 │   ├── PTU/
 │   └── HOTFIX/
@@ -74,14 +74,14 @@ Serves translation files for specific game branch and language.
 **Examples:**
 
 - `/translations/LIVE/ru/global.ini` - Russian translation for LIVE
-- `/translations/PTU/ko/global.ini` - Korean translation for PTU
-- `/translations/HOTFIX/en/global.ini` - English translation for HOTFIX
+- `/translations/PTU/fr/global.ini` - French translation for PTU
+- `/translations/HOTFIX/es/global.ini` - Spanish translation for HOTFIX
 
 ### Version Metadata
 
 **GET** `/versions/versions.json`
 
-Returns translation version information with dynamically injected base URL.
+Returns translation version information with dynamically injected base URL and available languages per game version.
 
 **Response:**
 
@@ -89,14 +89,27 @@ Returns translation version information with dynamically injected base URL.
 {
   "baseUrl": "http://localhost:3001/translations",
   "LIVE": {
-    "version": "1.5.0",
-    "filename": "live_ru_1.5.0.zip",
-    "notes": "Main update for LIVE"
+    "languages": {
+      "ru": { "version": "1.5.0" },
+      "de": { "version": "1.6.0" }
+    }
   },
-  "PTU": { ... },
-  "HOTFIX": { ... }
+  "PTU": {
+    "languages": {
+      "ru": { "version": "1.5.1" },
+      "fr": { "version": "1.0.1" }
+    }
+  },
+  "HOTFIX": {
+    "languages": {
+      "ru": { "version": "1.5.2" },
+      "es": { "version": "1.7.2" }
+    }
+  }
 }
 ```
+
+Available languages are dynamically discovered by scanning the `translations/` directory.
 
 ## Translation File Structure
 
@@ -126,7 +139,7 @@ Returns translation version information with dynamically injected base URL.
 
 ### Russian/Korean Conflict
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > Russian and Korean both install to `korean_(south_korea)` folder in the game:
 
 **On Server** (separate):
@@ -163,7 +176,19 @@ Key=Translated text
 AnotherKey=Another translation
 ```
 
-3. Test by accessing:
+3. Add version entry in `versions/versions.json` for each game version:
+
+```json
+{
+  "LIVE": {
+    "languages": {
+      "your_lang_id": { "version": "1.0.0" }
+    }
+  }
+}
+```
+
+4. Test by accessing:
 
 ```
 http://localhost:3001/translations/LIVE/{language_id}/global.ini
@@ -212,12 +237,12 @@ Translation files use INI format:
 # Comments start with #
 
 # UI Elements
-UI_MainMenu=Главное меню
-UI_Settings=Настройки
-UI_Exit=Выход
+UI_MainMenu=Main Menu
+UI_Settings=Settings
+UI_Exit=Exit
 
 # Gameplay
-Game_Welcome=Добро пожаловать, гражданин!
+Game_Welcome=Welcome, citizen!
 ```
 
 ## Production Deployment (Docker)
@@ -292,7 +317,7 @@ Translation files are mounted as volumes from `./translations` and `./versions`.
 ## Tech Stack
 
 - Node.js 22
-- Express.js 5.x
+- Express.js 5
 - Docker + nginx
 
 ## Related Projects

@@ -56,12 +56,26 @@ npm run build:app
 ```
 src/
 ├── api/               # Server API calls (translation downloads)
-├── components/        # React components
+├── assets/            # Static assets (community logo, etc.)
+├── components/        # React components (each with .tsx + .module.scss)
+│   ├── BackgroundEffects/
 │   ├── Button/
+│   ├── Card/
+│   ├── DataMatrix/
+│   ├── Footer/
+│   ├── Grid/
+│   ├── Panel/
 │   ├── Select/
-│   └── MessageDisplay/
+│   ├── Stack/
+│   ├── Terminal/
+│   ├── Titlebar/
+│   └── Typography/
 ├── constants/         # Language ID -> game code mappings
-├── hooks/             # Action hooks (useSettingsActions, useUpdateActions)
+├── fonts/             # Custom fonts (ShareTechMono)
+├── hooks/             # Action hooks
+│   ├── useSettingsActions.ts          # Install/uninstall/folder selection
+│   ├── useUpdateActions.ts            # App self-update
+│   └── useTranslationUpdateActions.ts # Translation update logic
 ├── locales/           # i18n translations (en.json, ru.json)
 ├── services/          # Tauri IPC wrappers
 │   ├── localizationService.ts  # Game localization operations
@@ -71,7 +85,15 @@ src/
 │   ├── RootStore.ts
 │   ├── SettingsStore.ts
 │   └── UIStore.ts
+├── styles/            # SCSS styles
+│   ├── index.scss
+│   ├── _variables.scss
+│   ├── _animations.scss
+│   ├── _functions.scss
+│   ├── _mixins.scss
+│   └── _reset.scss
 ├── types/             # TypeScript type definitions
+├── i18n.ts            # i18next configuration
 └── App.tsx            # Main application component
 
 src-tauri/
@@ -140,10 +162,11 @@ User settings are stored in `config.json` next to the executable. Includes:
 - Translation keys resolved with `t()` from react-i18next
 - Game versions are uppercase (`LIVE`, `PTU`, `HOTFIX`)
 - All filesystem operations go through Rust IPC (no `@tauri-apps/plugin-fs`)
+- Components use SCSS modules (`*.module.scss`)
 
 ## Tech Stack
 
-- **Frontend**: React 19, TypeScript, MobX, Vite, i18next
+- **Frontend**: React 19, TypeScript, MobX, Vite, i18next, Sass
 - **Backend**: Rust, Tauri v2
 
 ## Related Projects

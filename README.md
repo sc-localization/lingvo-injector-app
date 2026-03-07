@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/sc-localization/lingvo-injector/main/docs/assets/app-header.png" width="100%" alt="Lingvo Injector">
+  <img src="https://github.com/sc-localization/lingvo-injector-app/blob/main/docs/assets/app-header.png" width="100%" alt="Lingvo Injector">
 </p>
 
 ---
@@ -25,8 +25,8 @@
 ### Installation
 
 ```bash
-git clone https://github.com/sc-localization/lingvo-injector.git
-cd lingvo-injector
+git clone https://github.com/sc-localization/lingvo-injector-app.git
+cd lingvo-injector-app
 npm install
 ```
 
@@ -65,12 +65,27 @@ lingvo-injector/
 ├── app/                        # Tauri v2 desktop app
 │   ├── src/                    # React frontend
 │   │   ├── api/                # Server API calls
+│   │   ├── assets/             # Static assets (images)
 │   │   ├── components/         # UI components
-│   │   ├── hooks/              # React hooks (actions)
-│   │   ├── stores/             # MobX state management
-│   │   ├── services/           # Tauri IPC wrappers
+│   │   │   ├── BackgroundEffects/
+│   │   │   ├── Button/
+│   │   │   ├── Card/
+│   │   │   ├── DataMatrix/
+│   │   │   ├── Footer/
+│   │   │   ├── Grid/
+│   │   │   ├── Panel/
+│   │   │   ├── Select/
+│   │   │   ├── Stack/
+│   │   │   ├── Terminal/
+│   │   │   ├── Titlebar/
+│   │   │   └── Typography/
 │   │   ├── constants/          # Language mappings
+│   │   ├── fonts/              # Custom fonts
+│   │   ├── hooks/              # React hooks (actions)
 │   │   ├── locales/            # UI translations (en, ru)
+│   │   ├── services/           # Tauri IPC wrappers
+│   │   ├── stores/             # MobX state management
+│   │   ├── styles/             # SCSS styles (variables, mixins, animations)
 │   │   └── types/              # TypeScript types
 │   └── src-tauri/              # Rust backend
 │
@@ -107,10 +122,21 @@ Languages are discovered dynamically from the server filesystem. Add new transla
 
 Star Citizen uses specific locale codes. Russian uses `korean_(south_korea)` because SC doesn't support Cyrillic natively.
 
-| Language | Server Path | Game Code              |
-| -------- | ----------- | ---------------------- |
-| English  | `en/`       | `english`              |
-| Russian  | `ru/`       | `korean_(south_korea)` |
+| Language             | Server Path | Game Code              |
+| -------------------- | ----------- | ---------------------- |
+| English              | `en/`       | `english`              |
+| Russian              | `ru/`       | `korean_(south_korea)` |
+| Korean               | `ko/`       | `korean_(south_korea)` |
+| Chinese (Simplified) | `zh/`       | `chinese_(simplified)` |
+| French               | `fr/`       | `french_(france)`      |
+| German               | `de/`       | `german_(germany)`     |
+| Italian              | `it/`       | `italian_(italy)`      |
+| Japanese             | `ja/`       | `japanese_(japan)`     |
+| Polish               | `pl/`       | `polish_(poland)`      |
+| Portuguese           | `pt/`       | `portuguese_(brazil)`  |
+| Spanish              | `es/`       | `spanish_(spain)`      |
+
+> **Note:** Russian and Korean share the same game code (`korean_(south_korea)`). Only one can be active at a time.
 
 ## Server Deployment
 
@@ -118,9 +144,9 @@ The server can run locally for development or be deployed to a VPS using Docker 
 
 ## Tech Stack
 
-**App:** Tauri v2 (Rust), React 19, TypeScript, MobX, i18next
+**App:** Tauri v2 (Rust), React 19, TypeScript, MobX, i18next, Sass
 
-**Server:** Node.js, Express 5, Docker, nginx
+**Server:** Node.js 22, Express 5, Docker, nginx
 
 ## Troubleshooting
 
