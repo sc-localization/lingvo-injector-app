@@ -1,6 +1,8 @@
 <p align="center">
-  <img src="https://github.com/sc-localization/lingvo-injector/blob/main/docs/assets/icon.png?raw=true" width="100" alt="Lingvo Injector">
+  <img src="https://github.com/sc-localization/lingvo-injector/main/docs/assets/app-header.png" width="100%" alt="Lingvo Injector">
 </p>
+
+---
 
 <h1 align="center">Lingvo Injector</h1>
 
