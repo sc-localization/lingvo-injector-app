@@ -2,7 +2,6 @@
 
 @mixin panel {
   background: $panel-bg;
-  border: 1px solid $fg-dark;
   padding: 20px;
   position: relative;
   clip-path: polygon(
@@ -14,6 +13,25 @@
     0 calc(100% - 15px)
   );
   backdrop-filter: blur(5px);
+
+  // Draw border via pseudo-element to avoid WebKit bug
+  // (border + clip-path + backdrop-filter on same element breaks rendering)
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid $fg-dark;
+    clip-path: polygon(
+      0 0,
+      calc(100% - 15px) 0,
+      100% 15px,
+      100% 100%,
+      15px 100%,
+      0 calc(100% - 15px)
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
 }
 
 @mixin panel-title {
