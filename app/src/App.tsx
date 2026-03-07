@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
+import { version } from '../package.json';
 
 import { appLanguages } from './constants';
 import { useStores } from './stores/RootStore';
@@ -131,7 +132,7 @@ const App = observer(() => {
               SYS.ONLINE
             </Typography>
 
-            <Typography variant="status">VER: 0.1.0</Typography>
+            <Typography variant="status">VER: {version}</Typography>
           </Stack>
         </header>
 
