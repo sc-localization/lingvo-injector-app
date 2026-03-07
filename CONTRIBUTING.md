@@ -3,7 +3,7 @@
 
 ## Creating an issue
 
-Before creating an issue please ensure that the problem is not [already reported](https://github.com/sc-localization/VerseBridge/issues).
+Before creating an issue please ensure that the problem is not [already reported](https://github.com/sc-localization/lingvo-injector-app/issues).
 
 ## How to Contribute
 
@@ -12,8 +12,8 @@ Before creating an issue please ensure that the problem is not [already reported
    First, create your own copy of the repository by clicking the "Fork" button on GitHub. Then, clone your fork to your local machine:
 
    ```sh
-   git clone https://github.com/sc-localization/lingvo-injector.git
-   cd lingvo-injector
+   git clone https://github.com/sc-localization/lingvo-injector-app.git
+   cd lingvo-injector-app
    ```
 
 2. **Create a New Branch**
@@ -32,13 +32,35 @@ Before creating an issue please ensure that the problem is not [already reported
    git commit -m "feat: add new super feature"
    ```
 
-5. **Push Changes**
+5. **Update Your Branch**
+
+   Before pushing, make sure your branch is up to date with `main` to avoid merge conflicts:
+
+   ```sh
+   git fetch origin
+   git rebase origin/main
+   ```
+
+   If there are conflicts, resolve them in your editor, then:
+
+   ```sh
+   git add .
+   git rebase --continue
+   ```
+
+6. **Push Changes**
 
    ```sh
    git push -u origin feature/short-description
    ```
 
-6. **Create a Pull Request**
+   If you've rebased a branch that was already pushed, you'll need to force-push:
+
+   ```sh
+   git push --force-with-lease origin feature/short-description
+   ```
+
+7. **Create a Pull Request**
 
 ## Commit messages
 
