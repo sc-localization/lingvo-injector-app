@@ -19,6 +19,7 @@ import Typography from './components/Typography/Typography';
 import BackgroundEffects from './components/BackgroundEffects/BackgroundEffects';
 import Grid from './components/Grid/Grid';
 import Stack from './components/Stack/Stack';
+import Footer from './components/Footer/Footer';
 
 const App = observer(() => {
   const { t } = useTranslation();
@@ -332,6 +333,8 @@ const App = observer(() => {
         <aside className={styles.terminalWrapper}>
           <Terminal />
         </aside>
+
+        <Footer />
       </main>
     </>
   );
