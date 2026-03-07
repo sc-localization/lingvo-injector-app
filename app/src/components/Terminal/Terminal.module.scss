@@ -13,6 +13,7 @@
 
 .header {
   background: $fg-dark;
+  color: $accent;
   padding: 8px 10px;
   display: flex;
   justify-content: space-between;
@@ -75,7 +76,7 @@
 .cursor {
   display: inline-block;
   width: 6px;
-  height: 12px;
+  height: 10px;
   background: $accent;
   animation: blink 1s step-end infinite;
 }

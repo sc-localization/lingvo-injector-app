@@ -41,6 +41,21 @@
     "auto_check_translation_updates": "Auto-check translation updates",
     "active_game_language": "Active game language: {{language}}",
     "no_active_language": "No language configured",
-    "active_language_mismatch_warning": "Selected translation differs from active game language. Reinstall to switch."
+    "active_language_mismatch_warning": "Selected translation differs from active game language. Reinstall to switch.",
+    "target_directory": "Target Directory",
+    "selected_folder_label": "Selected Folder",
+    "installed_version_label": "Installed Ver:",
+    "available_version_label": "Available Ver:",
+    "active_language_label": "Active Lang:",
+    "status_label": "Status:",
+    "sys_log": "SYS.LOG",
+    "scan_idle": "SCAN: IDLE",
+    "scan_active": "SCAN: ACTIVE...",
+    "awaiting_cmd": "AWAITING_CMD",
+    "boot_kernel": "Booting LINGVO kernel v2.0...",
+    "boot_mount_fs": "Mounting fs: /user/data/...",
+    "boot_fs_ok": "FileSystem Integrity: OK",
+    "boot_loading_manifest": "Loading remote manifest...",
+    "boot_ready": "System ready."
   }
 }

@@ -19,8 +19,11 @@ export class UIStore {
   translationVersionStatuses: TranslationVersionStatuses = {};
   isCheckingTranslationUpdates: boolean = false;
   logEntries: LogEntry[] = [
-    { type: 'system', text: 'Booting LINGVO kernel...' },
-    { type: 'success', text: 'System ready.' },
+    { type: 'system', text: 'boot_kernel' },
+    { type: 'system', text: 'boot_mount_fs' },
+    { type: 'success', text: 'boot_fs_ok' },
+    { type: 'system', text: 'boot_loading_manifest' },
+    { type: 'success', text: 'boot_ready' },
   ];
 
   constructor(root: RootStore) {
@@ -39,8 +42,14 @@ export class UIStore {
   setMessage = (message: Message) => {
     this.message = message;
     if (message) {
-      // Automatically log messages to the terminal
-      this.addLogEntry(message.type, message.key); // Using key for now, we'll translate in component if needed or just pass text
+      // Only show update notifications as info (yellow), everything else as system
+      const UPDATE_KEYS = ['update_available', 'translation_updates_available'];
+      const logType = UPDATE_KEYS.includes(message.key)
+        ? 'info'
+        : message.type === 'info'
+          ? 'system'
+          : message.type;
+      this.addLogEntry(logType, message.key);
     }
   };
 

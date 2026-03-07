@@ -41,6 +41,21 @@
     "auto_check_translation_updates": "Автопроверка обновлений перевода",
     "active_game_language": "Активный язык игры: {{language}}",
     "no_active_language": "Язык не настроен",
-    "active_language_mismatch_warning": "Выбранный перевод отличается от активного языка игры. Переустановите для переключения."
+    "active_language_mismatch_warning": "Выбранный перевод отличается от активного языка игры. Переустановите для переключения.",
+    "target_directory": "Целевая директория",
+    "selected_folder_label": "Выбранная папка",
+    "installed_version_label": "Установл. вер.:",
+    "available_version_label": "Доступная вер.:",
+    "active_language_label": "Активный язык:",
+    "status_label": "Статус:",
+    "sys_log": "SYS.LOG",
+    "scan_idle": "SCAN: IDLE",
+    "scan_active": "SCAN: ACTIVE...",
+    "awaiting_cmd": "AWAITING_CMD",
+    "boot_kernel": "Booting LINGVO kernel v2.0...",
+    "boot_mount_fs": "Mounting fs: /user/data/...",
+    "boot_fs_ok": "FileSystem Integrity: OK",
+    "boot_loading_manifest": "Loading remote manifest...",
+    "boot_ready": "System ready."
   }
 }

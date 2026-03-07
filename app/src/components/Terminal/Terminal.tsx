@@ -23,10 +23,10 @@ const Terminal = observer(() => {
     <div className={styles.terminal}>
       <div className={styles.header}>
         <Typography variant="body" color="accent">
-          SYS.LOG
+          {t('sys_log')}
         </Typography>
         <Typography variant="body" color="dim">
-          SCAN: {isBusy ? 'ACTIVE...' : 'IDLE'}
+          {isBusy ? t('scan_active') : t('scan_idle')}
         </Typography>
       </div>
       <div ref={contentRef} className={styles.content}>
@@ -41,7 +41,7 @@ const Terminal = observer(() => {
         ))}
       </div>
       <div className={styles.footer}>
-        AWAITING_CMD <span className={styles.cursor} />
+        {t('awaiting_cmd')} <span className={styles.cursor} />
       </div>
     </div>
   );

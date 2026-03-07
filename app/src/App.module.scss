@@ -103,7 +103,9 @@
 .statusLine {
   display: flex;
   justify-content: space-between;
+  font-size: 0.8rem;
   margin-bottom: 8px;
+  color: $fg-dim;
 }
 
 .statusLineSeparated {
@@ -158,6 +160,8 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+  font-size: 0.8rem;
+  color: $fg;
   width: 100%;
   margin-top: 15px;
   text-transform: uppercase;

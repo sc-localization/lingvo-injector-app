@@ -2,7 +2,7 @@
 
 @mixin panel {
   background: $panel-bg;
-  outline: 1px solid $border;
+  border: 1px solid $fg-dark;
   padding: 20px;
   position: relative;
   clip-path: polygon(

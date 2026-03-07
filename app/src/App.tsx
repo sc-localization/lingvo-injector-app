@@ -97,7 +97,7 @@ const App = observer(() => {
     ? t(uiStore.message.key, uiStore.message.payload ?? {})
     : hasUpdateForCurrentVersion
       ? t('update_translation_btn')
-      : 'NO UPDATES FOUND';
+      : t('no_updates_found');
 
   const statusColor = uiStore.message
     ? uiStore.message.type === 'error'
@@ -136,9 +136,11 @@ const App = observer(() => {
         </header>
 
         {/* Main Panel */}
-        <Panel title="TARGET DIRECTORY" className={styles.mainPanel}>
+        <Panel title={t('target_directory')} className={styles.mainPanel}>
           <Stack gap={10} className={styles.folderBlock}>
-            <Typography variant="label">SELECTED FOLDER</Typography>
+            <Typography variant="label">
+              {t('selected_folder_label')}
+            </Typography>
 
             <Typography variant="path" as="div">
               {settingsStore.baseGameFolder || t('folder_not_selected')}
@@ -193,7 +195,7 @@ const App = observer(() => {
               <Stack gap={0} className={styles.statusBlock}>
                 <Stack direction="row" className={styles.statusLine}>
                   <Typography variant="body" color="dim">
-                    INSTALLED VER:
+                    {t('installed_version_label')}
                   </Typography>
 
                   <Typography variant="body" color="accent">
@@ -203,7 +205,7 @@ const App = observer(() => {
 
                 <Stack direction="row" className={styles.statusLine}>
                   <Typography variant="body" color="dim">
-                    AVAILABLE VER:
+                    {t('available_version_label')}
                   </Typography>
 
                   <Typography variant="body" color="accent">
@@ -213,11 +215,12 @@ const App = observer(() => {
 
                 <Stack direction="row" className={styles.statusLineSeparated}>
                   <Typography variant="body" color="dim">
-                    ACTIVE LANG:
+                    {t('active_language_label')}
                   </Typography>
 
                   <Typography variant="body">
-                    {settingsStore.activeGameLanguageName || '---'}
+                    {settingsStore.activeGameLanguageName?.toUpperCase() ||
+                      '---'}
                   </Typography>
                 </Stack>
               </Stack>
@@ -227,7 +230,7 @@ const App = observer(() => {
           <Card className={styles.installBlock}>
             <Stack direction="row" className={styles.statusRow}>
               <Typography variant="label" className={styles.label}>
-                STATUS:
+                {t('status_label')}
               </Typography>
 
               <Typography
