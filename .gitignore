@@ -55,3 +55,6 @@ GEMINI.md
 
 # Rust analyzer
 .rust-analyzer/
+
+# Translation files (mock data for dev, real translations on server)
+server/translations/**/global.ini

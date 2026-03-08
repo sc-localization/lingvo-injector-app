@@ -1,6 +1,16 @@
+<p align="center">
+  <img src="https://github.com/sc-localization/lingvo-injector-app/blob/main/docs/assets/icon.png" width="50px" alt="Lingvo Injector">
+</p>
+
 # Lingvo Injector Server
 
-HTTP server for serving Star Citizen translation files and version metadata.
+HTTP server for serving Star Citizen® translation files and version metadata.
+
+<p align="center">
+      <img src="https://github.com/sc-localization/.github/blob/main/assets/community.png?raw=true" width="100" alt="Made the community">
+</p>
+
+<p align="center"><em>This is an unofficial Star Citizen fansite and fan localization tool. It is, not affiliated with the Cloud Imperium group of companies. All content on this site not authored by its host or users are property of their respective owners.</em></p>
 
 ## Features
 
@@ -245,75 +255,6 @@ UI_Exit=Exit
 Game_Welcome=Welcome, citizen!
 ```
 
-## Production Deployment (Docker)
-
-### Prerequisites
-
-- Docker and Docker Compose installed on your VPS
-
-### Setup
-
-1. Clone the repo and navigate to the server directory:
-
-```bash
-cd server
-```
-
-2. Create a `.env` file (optional, for custom base URL):
-
-```bash
-# Set this to your domain's translations URL
-BASE_URL=https://your-domain.com/translations
-```
-
-If `BASE_URL` is not set, the server derives it from the incoming request's `Host` header.
-
-3. Start the services:
-
-```bash
-docker compose up -d --build
-```
-
-4. Verify:
-
-```bash
-curl http://localhost/versions/versions.json
-curl http://localhost/translations/LIVE/ru/global.ini
-```
-
-### SSL with Certbot
-
-1. Update `nginx/nginx.conf`: replace `your-domain.com` with your actual domain in the commented-out HTTPS block.
-
-2. Obtain certificates:
-
-```bash
-docker compose run --rm certbot certonly --webroot -w /var/www/certbot -d your-domain.com
-```
-
-Or install certbot on the host and use it directly.
-
-3. Uncomment the HTTPS server block in `nginx/nginx.conf` and remove/comment the default HTTP block (keep the ACME challenge location and HTTP-to-HTTPS redirect).
-
-4. Restart nginx:
-
-```bash
-docker compose restart nginx
-```
-
-5. Update the app's API base URL to point to your production server (e.g., `https://your-domain.com`).
-
-### Updating Translations
-
-Translation files are mounted as volumes from `./translations` and `./versions`. Update files on disk and they are served immediately — no container restart needed.
-
-## Security Notes
-
-- Server has CORS enabled for all origins (development setup)
-- For production, restrict CORS to specific origins
-- Implement rate limiting for public deployments
-- Use HTTPS for production
-
 ## Tech Stack
 
 - Node.js 22
@@ -323,3 +264,11 @@ Translation files are mounted as volumes from `./translations` and `./versions`.
 ## Related Projects
 
 - [Lingvo Injector App](../app/) - Desktop client application
+
+## License
+
+See [LICENSE](../LICENSE) file for details.
+
+## Trademarks
+
+Star Citizen®, Roberts SpaceIndustries® and Cloud Imperium® are registered trademarks of Cloud Imperium Rights LLC.

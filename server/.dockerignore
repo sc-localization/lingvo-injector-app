@@ -1,2 +1,7 @@
 node_modules
 .env
+.git
+*.md
+nginx
+docker-compose.yml
+certbot

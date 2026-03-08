@@ -1,11 +1,21 @@
+<p align="center">
+  <img src="https://github.com/sc-localization/lingvo-injector-app/blob/main/docs/assets/icon.png" width="50px" alt="Lingvo Injector">
+</p>
+
 # Lingvo Injector App
 
-Star Citizen Localization Installer - a Tauri v2 desktop application for installing and managing game translations.
+Star Citizen® Localization Installer - a Tauri v2 desktop application for installing and managing game translations.
+
+<p align="center">
+      <img src="https://github.com/sc-localization/.github/blob/main/assets/community.png?raw=true" width="100" alt="Made the community">
+</p>
+
+<p align="center"><em>This is an unofficial Star Citizen fansite and fan localization tool. It is, not affiliated with the Cloud Imperium group of companies. All content on this site not authored by its host or users are property of their respective owners.</em></p>
 
 ## Features
 
 - Multi-language support with dynamic language discovery from server
-- Support for all Star Citizen versions (LIVE, PTU, HOTFIX)
+- Support for all Star Citizen® versions (LIVE, PTU, HOTFIX)
 - Auto-detection of game installation folder
 - One-click localization installation and removal
 - Per-language translation versioning and update tracking
@@ -150,7 +160,7 @@ For production, point this to the deployed server URL.
 
 User settings are stored in `config.json` next to the executable. Includes:
 
-- `base_folder` - Star Citizen installation path
+- `base_folder` - Star Citizen® installation path
 - `selected_version` - Active game version (LIVE/PTU/HOTFIX)
 - `selected_language` - Selected translation language ID
 - `installed_translations` - Per-version/language installed translation versions
@@ -176,3 +186,7 @@ User settings are stored in `config.json` next to the executable. Includes:
 ## License
 
 See [LICENSE](../LICENSE) file for details.
+
+## Trademarks
+
+Star Citizen®, Roberts SpaceIndustries® and Cloud Imperium® are registered trademarks of Cloud Imperium Rights LLC.

@@ -25,10 +25,10 @@ const Footer = () => {
       <img src={communityLogo} className={styles.watermark} alt="watermark" />
 
       <p className={styles.disclaimer}>
-        This is an unofficial Star Citizen fan localisation, not affiliated with
-        the Cloud Imperium group of companies. Star Citizen®, Roberts Space
-        Industries® and Cloud Imperium® are registered trademarks of Cloud
-        Imperium Rights LLC.
+        This is an unofficial Star Citizen fan localization and tool, not
+        affiliated with the Cloud Imperium group of companies. Star Citizen®,
+        Roberts Space Industries® and Cloud Imperium® are registered trademarks
+        of Cloud Imperium Rights LLC.
       </p>
     </footer>
   );
