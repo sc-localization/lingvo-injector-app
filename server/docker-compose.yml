@@ -5,6 +5,7 @@ services:
     environment:
       - PORT=3001
       - BASE_URL=${BASE_URL:-}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-}
     volumes:
       - ./translations:/app/translations
       - ./versions:/app/versions
