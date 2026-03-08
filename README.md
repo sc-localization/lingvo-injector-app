@@ -4,15 +4,15 @@
 
 ---
 
-<h1 align="center">Lingvo Injector</h1>
+<!-- <h1 align="center">Lingvo Injector</h1> -->
 
-<p align="center">Star Citizen localization manager - desktop app for installing translation files.</p>
+<p align="center">Desktop app for installing translation files.</p>
 
 <p align="center">
       <img src="https://github.com/sc-localization/.github/blob/main/assets/community.png?raw=true" width="100" alt="Made the community">
 </p>
 
-<p align="center"><em>This is an unofficial Star Citizen fansite, not affiliated with the Cloud Imperium group of companies. All content on this site not authored by its host or users are property of their respective owners.</em></p>
+<p align="center"><em>This is an unofficial Star Citizen fansite and fan localization tool. It is, not affiliated with the Cloud Imperium group of companies. All content on this site not authored by its host or users are property of their respective owners.</em></p>
 
 ## Quick Start
 
@@ -136,11 +136,8 @@ Star Citizen uses specific locale codes. Russian uses `korean_(south_korea)` bec
 | Portuguese           | `pt/`       | `portuguese_(brazil)`  |
 | Spanish              | `es/`       | `spanish_(spain)`      |
 
-> **Note:** Russian and Korean share the same game code (`korean_(south_korea)`). Only one can be active at a time.
-
-## Server Deployment
-
-The server can run locally for development or be deployed to a VPS using Docker + nginx. See [server/README.md](server/README.md) for deployment instructions.
+> [!IMPORTANT]
+> Russian and Korean share the same game code (`korean_(south_korea)`). Only one can be active at a time.
 
 ## Tech Stack
 
@@ -172,3 +169,7 @@ npm run build
 ## License
 
 CC BY-NC 4.0 - See [LICENSE](LICENSE) for details.
+
+## Trademarks
+
+Star Citizen®, Roberts SpaceIndustries® and Cloud Imperium® are registered trademarks of Cloud Imperium Rights LLC.
