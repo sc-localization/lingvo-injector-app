@@ -255,6 +255,286 @@ UI_Exit=Exit
 Game_Welcome=Welcome, citizen!
 ```
 
+## Docker
+
+### Local Testing
+
+1. Navigate to the server folder:
+
+```bash
+cd server
+```
+
+2. Build and start containers:
+
+```bash
+docker compose up --build
+```
+
+3. Verify the server is running:
+
+```bash
+curl http://localhost/versions/versions.json
+curl http://localhost/health
+```
+
+4. Stop:
+
+```bash
+docker compose down
+```
+
+> [!TIP]
+> `translations/` and `versions/` are mounted as volumes — you can update translation files without rebuilding the image.
+
+---
+
+### Deploy to VPS (pre-built image from local machine)
+
+Build the Docker image locally and upload it to the server — no need to clone the repo on the VPS.
+
+#### 1. Build the image locally
+
+```bash
+cd server
+docker build -t lingvo-server .
+```
+
+#### 2. Save the image to a file
+
+```bash
+docker save lingvo-server | gzip > lingvo-server.tar.gz
+```
+
+#### 3. Upload to the server
+
+```bash
+scp lingvo-server.tar.gz root@YOUR_SERVER_IP:/opt/
+```
+
+#### 4. On the server: install Docker (if not installed)
+
+```bash
+ssh root@YOUR_SERVER_IP
+
+# Update packages
+apt update && apt upgrade -y
+
+# Install dependencies
+apt install -y ca-certificates curl gnupg
+
+# Add Docker GPG key
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add Docker repository
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Install Docker
+apt update
+apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Verify
+docker --version
+docker compose version
+```
+
+#### 5. On the server: load the image
+
+```bash
+docker load < /opt/lingvo-server.tar.gz
+```
+
+#### 6. Upload configuration files (from local machine)
+
+```bash
+ssh root@YOUR_SERVER_IP "mkdir -p /opt/lingvo-server"
+scp docker-compose.yml root@YOUR_SERVER_IP:/opt/lingvo-server/
+scp -r nginx root@YOUR_SERVER_IP:/opt/lingvo-server/
+scp -r translations root@YOUR_SERVER_IP:/opt/lingvo-server/
+scp -r versions root@YOUR_SERVER_IP:/opt/lingvo-server/
+```
+
+#### 7. On the server: configure docker-compose.yml
+
+```bash
+ssh root@YOUR_SERVER_IP
+cd /opt/lingvo-server
+```
+
+Replace the `app.build` section with `app.image`:
+
+```yaml
+services:
+  app:
+    image: lingvo-server # instead of build: .
+    restart: unless-stopped
+    environment:
+      - PORT=3001
+      - BASE_URL=https://your-domain.com/translations
+    volumes:
+      - ./translations:/app/translations
+      - ./versions:/app/versions
+    expose:
+      - "3001"
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+    depends_on:
+      - app
+```
+
+#### 8. (Optional) Set up SSL with Let's Encrypt
+
+Edit `nginx/nginx.conf` — replace `your-domain.com` with your domain in the commented-out HTTPS block.
+
+Obtain the certificate:
+
+```bash
+# Start without SSL first so certbot can pass the challenge
+docker compose up -d
+
+# Run certbot
+docker run --rm \
+  -v ./certbot/conf:/etc/letsencrypt \
+  -v ./certbot/www:/var/www/certbot \
+  certbot/certbot certonly \
+  --webroot -w /var/www/certbot \
+  -d your-domain.com \
+  --email your@email.com \
+  --agree-tos --no-eff-email
+
+# Stop containers
+docker compose down
+```
+
+Uncomment the HTTPS block in `nginx/nginx.conf` and replace the HTTP block with a redirect.
+
+#### 9. Start the server
+
+```bash
+docker compose up -d
+```
+
+#### 10. Verify
+
+```bash
+# Logs
+docker compose logs -f
+
+# Health check
+curl http://localhost/health
+
+# Versions
+curl http://localhost/versions/versions.json
+```
+
+#### SSL certificate auto-renewal (cron)
+
+```bash
+crontab -e
+```
+
+Add the following line:
+
+```
+0 3 * * 1 cd /opt/lingvo-server && docker run --rm -v ./certbot/conf:/etc/letsencrypt -v ./certbot/www:/var/www/certbot certbot/certbot renew && docker compose exec nginx nginx -s reload
+```
+
+#### Updating the image
+
+Repeat steps 1–5 locally, then on the server:
+
+```bash
+cd /opt/lingvo-server
+docker compose down
+docker compose up -d
+```
+
+---
+
+### Deploy to VPS (build on server)
+
+Alternative approach — clone the repo directly on the server and build there.
+
+#### 1. Connect to the server
+
+```bash
+ssh root@YOUR_SERVER_IP
+```
+
+#### 2. Install Docker (same as step 4 above)
+
+#### 3. Clone only the server folder
+
+```bash
+cd /opt
+git clone --depth 1 --filter=blob:none --sparse \
+  https://github.com/sc-localization/lingvo-injector.git
+cd lingvo-injector
+git sparse-checkout set server
+cd server
+```
+
+> [!TIP]
+> This downloads only the `server/` folder, not the entire repository.
+
+#### 4. Configure environment variables
+
+Create a `.env` file in the `server/` folder:
+
+```bash
+cat > .env << 'EOF'
+BASE_URL=https://your-domain.com/translations
+ALLOWED_ORIGINS=https://your-domain.com
+EOF
+```
+
+#### 5. Start the server
+
+```bash
+docker compose up -d --build
+```
+
+#### 6. Verify
+
+```bash
+docker compose logs -f
+curl http://localhost/health
+curl http://localhost/versions/versions.json
+```
+
+#### Updating the server
+
+```bash
+cd /opt/lingvo-injector
+git pull
+cd server
+docker compose up -d --build
+```
+
+#### Useful commands
+
+```bash
+docker compose ps              # Container status
+docker compose logs -f app     # App logs
+docker compose logs -f nginx   # Nginx logs
+docker compose restart         # Restart
+docker compose down            # Stop
+```
+
 ## Tech Stack
 
 - Node.js 22
