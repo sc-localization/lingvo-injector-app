@@ -43,6 +43,9 @@ npm run dev
 npm run dev:app
 ```
 
+> [!NOTE]
+> The app requires a running translation server. See **[Server README](../server/README.md)** for server setup, Docker configuration, and production deployment instructions.
+
 From the `app/` directory:
 
 ```bash

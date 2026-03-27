@@ -16,47 +16,18 @@
 
 ## Quick Start
 
-### Prerequisites
-
-- Node.js 18+
-- Rust toolchain (for Tauri)
-- Windows OS (target platform)
-
-### Installation
-
 ```bash
-git clone https://github.com/sc-localization/lingvo-injector-app.git
-cd lingvo-injector-app
+git clone https://github.com/sc-localization/lingvo-injector.git
+cd lingvo-injector
 npm install
+npm run dev          # Start server + app concurrently
 ```
 
-### Development
-
-```bash
-# Run server + app concurrently (recommended)
-npm run dev
-
-# Or run separately
-npm run dev:server   # Express server (port 3001)
-npm run dev:app      # Tauri app (Vite :1420 + Tauri)
-```
-
-The Express server must be running before the app, as the app fetches translation data from it.
-
-### Building
-
-```bash
-npm run build:app    # Production Tauri release build
-```
-
-### Linting & Formatting
-
-```bash
-npm run lint         # ESLint on both workspaces
-npm run format       # Prettier on both workspaces
-```
-
-Pre-commit hooks (Husky + lint-staged) auto-fix and format staged files. Commits follow [Conventional Commits](https://www.conventionalcommits.org/).
+> [!NOTE]
+> Each component has its own README with detailed setup, build, and deployment instructions:
+>
+> - **[App README](app/README.md)** — Tauri desktop app: development, building, project structure
+> - **[Server README](server/README.md)** — Translation server: API endpoints, Docker setup (local & production), VPS deployment
 
 ## Project Structure
 
@@ -92,7 +63,8 @@ lingvo-injector/
 ├── server/                     # Translation server
 │   ├── server.js               # Express server
 │   ├── Dockerfile              # Container image
-│   ├── docker-compose.yml      # Docker Compose (app + nginx)
+│   ├── docker-compose.yml      # Docker Compose (local testing)
+│   ├── docker-compose.prod.yml # Docker Compose (production + nginx)
 │   ├── nginx/                  # Reverse proxy config
 │   ├── translations/           # Translation files by version/language
 │   │   ├── LIVE/
@@ -144,27 +116,6 @@ Star Citizen uses specific locale codes. Russian uses `korean_(south_korea)` bec
 **App:** Tauri v2 (Rust), React 19, TypeScript, MobX, i18next, Sass
 
 **Server:** Node.js 22, Express 5, Docker, nginx
-
-## Troubleshooting
-
-**App can't download translations:**
-
-- Make sure server is running (`npm run dev:server`)
-- Check that `http://localhost:3001/versions/versions.json` returns valid JSON
-
-**Workspace issues:**
-
-```bash
-npm install  # Reinstall all dependencies
-```
-
-**Tauri build issues:**
-
-```bash
-cd app
-cargo clean
-npm run build
-```
 
 ## License
 

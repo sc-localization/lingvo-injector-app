@@ -59,7 +59,8 @@ npm run lint:fix
 server/
 ├── server.js               # Main Express server
 ├── Dockerfile              # Container image (Node 22-Alpine)
-├── docker-compose.yml      # Docker Compose (app + nginx)
+├── docker-compose.yml      # Docker Compose for local testing (app only)
+├── docker-compose.prod.yml # Docker Compose for production (app + nginx)
 ├── nginx/
 │   └── nginx.conf          # Reverse proxy config
 ├── translations/           # Translation files by version/language
@@ -259,13 +260,15 @@ Game_Welcome=Welcome, citizen!
 
 ### Local Testing
 
+Uses `docker-compose.yml` — runs only the app container with port 3001 exposed directly (no nginx).
+
 1. Navigate to the server folder:
 
 ```bash
 cd server
 ```
 
-2. Build and start containers:
+2. Build and start:
 
 ```bash
 docker compose up --build
@@ -274,8 +277,8 @@ docker compose up --build
 3. Verify the server is running:
 
 ```bash
-curl http://localhost/versions/versions.json
-curl http://localhost/health
+curl http://localhost:3001/versions/versions.json
+curl http://localhost:3001/health
 ```
 
 4. Stop:
@@ -353,7 +356,7 @@ docker load < /opt/lingvo-server.tar.gz
 
 ```bash
 ssh root@YOUR_SERVER_IP "mkdir -p /opt/lingvo-server"
-scp docker-compose.yml root@YOUR_SERVER_IP:/opt/lingvo-server/
+scp docker-compose.prod.yml root@YOUR_SERVER_IP:/opt/lingvo-server/docker-compose.yml
 scp -r nginx root@YOUR_SERVER_IP:/opt/lingvo-server/
 scp -r translations root@YOUR_SERVER_IP:/opt/lingvo-server/
 scp -r versions root@YOUR_SERVER_IP:/opt/lingvo-server/
@@ -366,34 +369,19 @@ ssh root@YOUR_SERVER_IP
 cd /opt/lingvo-server
 ```
 
-Replace the `app.build` section with `app.image`:
+Edit `docker-compose.yml` — replace `build: .` with `image: lingvo-server` and set your domain:
+
+```bash
+nano docker-compose.yml
+```
+
+Change the `app` service:
 
 ```yaml
-services:
-  app:
-    image: lingvo-server # instead of build: .
-    restart: unless-stopped
-    environment:
-      - PORT=3001
-      - BASE_URL=https://your-domain.com/translations
-    volumes:
-      - ./translations:/app/translations
-      - ./versions:/app/versions
-    expose:
-      - "3001"
-
-  nginx:
-    image: nginx:alpine
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./certbot/conf:/etc/letsencrypt:ro
-      - ./certbot/www:/var/www/certbot:ro
-    depends_on:
-      - app
+image: lingvo-server # instead of build: .
+environment:
+  - BASE_URL=https://your-domain.com/translations
+  - ALLOWED_ORIGINS=https://your-domain.com
 ```
 
 #### 8. (Optional) Set up SSL with Let's Encrypt
@@ -505,13 +493,13 @@ EOF
 #### 5. Start the server
 
 ```bash
-docker compose up -d --build
+docker compose -f docker-compose.prod.yml up -d --build
 ```
 
 #### 6. Verify
 
 ```bash
-docker compose logs -f
+docker compose -f docker-compose.prod.yml logs -f
 curl http://localhost/health
 curl http://localhost/versions/versions.json
 ```
@@ -522,7 +510,7 @@ curl http://localhost/versions/versions.json
 cd /opt/lingvo-injector
 git pull
 cd server
-docker compose up -d --build
+docker compose -f docker-compose.prod.yml up -d --build
 ```
 
 #### Useful commands
