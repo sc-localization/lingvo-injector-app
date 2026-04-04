@@ -12,7 +12,7 @@ Before creating an issue please ensure that the problem is not [already reported
    First, create your own copy of the repository by clicking the "Fork" button on GitHub. Then, clone your fork to your local machine:
 
    ```sh
-   git clone https://github.com/sc-localization/lingvo-injector-app.git
+   git clone https://github.com/your-username/lingvo-injector-app.git
    cd lingvo-injector-app
    ```
 
@@ -27,12 +27,19 @@ Before creating an issue please ensure that the problem is not [already reported
 
 4. **Commit Changes**
 
+   Before committing, ensure your code is clean and functional:
+   - Run linting and formatting: `npm run lint` and `npm run format`
+   - Build the application to check for compilation errors: `npm run tauri:build:release`
+   - Run the application to verify your changes: `npm run tauri dev
+
+   Once verified, commit your changes:
+
    ```sh
    git add .
    git commit -m "feat: add new super feature"
    ```
 
-5. **Update Your Branch**
+6. **Update Your Branch**
 
    Before pushing, make sure your branch is up to date with `main` to avoid merge conflicts:
 
@@ -48,7 +55,7 @@ Before creating an issue please ensure that the problem is not [already reported
    git rebase --continue
    ```
 
-6. **Push Changes**
+7. **Push Changes**
 
    ```sh
    git push -u origin feature/short-description
@@ -60,7 +67,7 @@ Before creating an issue please ensure that the problem is not [already reported
    git push --force-with-lease origin feature/short-description
    ```
 
-7. **Create a Pull Request**
+8. **Create a Pull Request**
 
 ## Commit messages
 
