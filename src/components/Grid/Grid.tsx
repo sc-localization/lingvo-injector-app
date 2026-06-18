@@ -15,7 +15,7 @@ const Grid = ({
   className = '',
 }: GridProps) => {
   const style = {
-    gridTemplateColumns: `repeat(${columns}, 1fr)`,
+    gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
     gap: `${gap}px`,
   };
 
