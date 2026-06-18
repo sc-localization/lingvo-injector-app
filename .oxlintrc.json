@@ -19,6 +19,13 @@
       "env": {
         "node": true
       }
+    },
+    {
+      "files": ["src/components/Select/Select.tsx"],
+      "rules": {
+        "jsx-a11y/no-noninteractive-element-to-interactive-role": "off",
+        "jsx-a11y/prefer-tag-over-role": "off"
+      }
     }
   ]
 }

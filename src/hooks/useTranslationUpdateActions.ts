@@ -66,7 +66,7 @@ export const useTranslationUpdateActions = (
 
     if (settingsStore.autoCheckTranslationUpdates) {
       intervalRef.current = setInterval(() => {
-        checkTranslationUpdates();
+        void checkTranslationUpdates();
       }, AUTO_CHECK_INTERVAL_MS);
     }
 

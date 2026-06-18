@@ -50,14 +50,14 @@ const App = observer(() => {
         await Promise.all([loadSettings(), loadServerVersions()]);
         await initializeGameFolder(settingsStore.baseGameFolder);
         await refreshActiveLanguage();
-        checkAppUpdates();
-        checkTranslationUpdates();
+        void checkAppUpdates();
+        void checkTranslationUpdates();
       } catch (error) {
         console.error('Initialization error:', error);
       }
     };
 
-    init();
+    void init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

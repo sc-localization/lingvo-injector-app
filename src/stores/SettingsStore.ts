@@ -73,7 +73,7 @@ export class SettingsStore {
 
   setAppLanguage = (languageId: AppLanguageId) => {
     this.selectedAppLanguage = languageId;
-    i18n.changeLanguage(languageId);
+    void i18n.changeLanguage(languageId);
   };
 
   setTranslationLanguage = (languageId: TranslationLanguageId) => {
@@ -102,7 +102,7 @@ export class SettingsStore {
 
   setAutoCheckTranslationUpdates = (enabled: boolean) => {
     this.autoCheckTranslationUpdates = enabled;
-    this.saveSettings();
+    void this.saveSettings();
   };
 
   setInstalledTranslation = (
@@ -195,7 +195,7 @@ export class SettingsStore {
 
       return { success: false, error: errMessage };
     } finally {
-      this.saveSettings();
+      void this.saveSettings();
     }
   };
 
@@ -214,7 +214,7 @@ export class SettingsStore {
       return { success: true };
     } catch (error) {
       this.selectedAppLanguage = 'en'; // fallback if error
-      i18n.changeLanguage('en');
+      void i18n.changeLanguage('en');
 
       const errMessage = error instanceof Error ? error.message : String(error);
       console.error(`Error reading settings: ${errMessage}`);

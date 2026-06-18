@@ -10,7 +10,8 @@ const Titlebar = () => {
       <div className={styles.controls}>
         <button
           className={styles.controlBtn}
-          onClick={() => appWindow.minimize()}
+          onClick={() => void appWindow.minimize()}
+          aria-label="Minimize"
           title="Minimize"
         >
           <svg width="10" height="1" viewBox="0 0 10 1">
@@ -19,7 +20,8 @@ const Titlebar = () => {
         </button>
         <button
           className={`${styles.controlBtn} ${styles.close}`}
-          onClick={() => appWindow.close()}
+          onClick={() => void appWindow.close()}
+          aria-label="Close"
           title="Close"
         >
           <svg width="10" height="10" viewBox="0 0 10 10">
