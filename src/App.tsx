@@ -61,6 +61,15 @@ const App = observer(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Re-check translation versions when language or game version changes
+  useEffect(() => {
+    void checkTranslationUpdates();
+  }, [
+    settingsStore.selectedTranslationLanguage,
+    settingsStore.selectedGameVersion,
+    checkTranslationUpdates,
+  ]);
+
   // Log mismatch warning when it appears, but avoid infinite loops
   useEffect(() => {
     const currentMismatch =

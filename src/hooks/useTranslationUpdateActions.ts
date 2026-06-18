@@ -33,14 +33,19 @@ export const useTranslationUpdateActions = (
       const outdated = Object.entries(statuses)
         .filter(([, s]) => s.hasUpdate)
         .map(([v]) => v);
+      const anyInstalled = Object.values(statuses).some(
+        (s) => s.installedVersion !== null
+      );
       if (outdated.length > 0) {
         uiStore.setMessage({
           type: 'info',
           key: 'translation_updates_available',
           payload: { versions: outdated.join(', ') },
         });
-      } else {
+      } else if (anyInstalled) {
         uiStore.setMessage({ type: 'info', key: 'translations_up_to_date' });
+      } else {
+        uiStore.clearMessage();
       }
     } catch (error) {
       uiStore.setMessage({
