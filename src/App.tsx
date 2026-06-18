@@ -260,10 +260,21 @@ const App = observer(() => {
                   disabled={
                     !settingsStore.baseGameFolder ||
                     !settingsStore.selectedGameVersion ||
-                    settingsStore.availableTranslationLanguages.length === 0
+                    settingsStore.availableTranslationLanguages.length === 0 ||
+                    (!!settingsStore.installedTranslations[
+                      `${settingsStore.selectedGameVersion}_${settingsStore.selectedTranslationLanguage}`
+                    ] &&
+                      settingsStore.translationLanguageCode ===
+                        settingsStore.activeGameLanguageCodes[
+                          settingsStore.selectedGameVersion
+                        ])
                   }
                 >
-                  {t('install_localization_btn')}
+                  {settingsStore.installedTranslations[
+                    `${settingsStore.selectedGameVersion}_${settingsStore.selectedTranslationLanguage}`
+                  ]
+                    ? t('activate_localization_btn')
+                    : t('install_localization_btn')}
                 </Button>
 
                 <Button

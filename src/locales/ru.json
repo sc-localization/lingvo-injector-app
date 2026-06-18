@@ -13,6 +13,7 @@
     "change_base_game_folder_btn": "Выбрать другую базовую папку",
     "select_base_game_folder_btn": "Выбрать базовую папку",
     "install_localization_btn": "Установить локализацию",
+    "activate_localization_btn": "Сделать активной",
     "no_translations_available": "Переводы для этой версии отсутствуют на сервере.",
     "remove_localization_btn": "Удалить локализацию",
     "installing_localization": "Установка локализации...",

@@ -13,6 +13,7 @@
     "change_base_game_folder_btn": "Select another base folder",
     "select_base_game_folder_btn": "Select base folder",
     "install_localization_btn": "Install Localization",
+    "activate_localization_btn": "Set Active",
     "no_translations_available": "No translations available for this version on server.",
     "remove_localization_btn": "Remove Localization",
     "installing_localization": "Installing localization...",
