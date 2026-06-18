@@ -24,8 +24,11 @@ export const useSettingsActions = () => {
       uiStore.setMessage({
         type: 'error',
         key: key,
-        payload: { error: error || '' },
+        payload: { error: '' },
       });
+      if (error) {
+        uiStore.addLogEntry('error', error);
+      }
     },
     [uiStore]
   );
