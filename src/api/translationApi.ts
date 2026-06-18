@@ -4,7 +4,7 @@ import { ServerVersionsResponse } from '../types';
  * Fetch available versions and languages from server
  */
 export const fetchVersions = async (): Promise<ServerVersionsResponse> => {
-  const serverUrl = `${import.meta.env.VITE_SERVER_URL}/versions/versions.json`;
+  const serverUrl = `${import.meta.env.VITE_SERVER_URL}/versions/versions.json?t=${Date.now()}`;
 
   try {
     const response = await fetch(serverUrl, { cache: 'no-cache' });

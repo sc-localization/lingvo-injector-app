@@ -1,5 +1,9 @@
 name: 'Generate Release Notes'
-description: 'Generates release notes based on git commit history'
+description: 'Extracts release notes for the current version from CHANGELOG.md'
+inputs:
+  tag_name:
+    description: 'Tag name to extract notes for (e.g. v0.8.0). If empty, uses GITHUB_REF.'
+    required: false
 outputs:
   release_body:
     description: "The generated release notes"
@@ -10,30 +14,27 @@ runs:
     - name: Generate Notes
       id: generate
       shell: bash
+      env:
+        INPUT_TAG: ${{ inputs.tag_name }}
       run: |
-        echo "Fetching tags..."
-        git fetch --tags --force
-        
-        CURRENT_TAG=${GITHUB_REF#refs/tags/}
-        echo "Current Tag: $CURRENT_TAG"
-        
-        # Try to find the previous tag
-        PREV_TAG=$(git describe --tags --abbrev=0 "$CURRENT_TAG^" 2>/dev/null || echo "")
-        
-        echo "Previous Tag: $PREV_TAG"
-        
-        if [ -z "$PREV_TAG" ]; then
-          echo "No previous tag found. Generating log from start."
-          CHANGELOG=$(git log --no-merges --pretty=format:"* %s (%h)" "$CURRENT_TAG")
+        if [ -n "$INPUT_TAG" ]; then
+          CURRENT_TAG="$INPUT_TAG"
         else
-          echo "Generating log from $PREV_TAG to $CURRENT_TAG"
-          CHANGELOG=$(git log --no-merges --pretty=format:"* %s (%h)" "$PREV_TAG..$CURRENT_TAG")
+          CURRENT_TAG="${GITHUB_REF#refs/tags/}"
         fi
-        
-        # Prepare multiline string for output
+
+        VERSION="${CURRENT_TAG#v}"
+        echo "Extracting CHANGELOG.md section for version: $VERSION"
+
+        # Extract the block between ## [VERSION] and the next ## [
+        NOTES=$(awk -v ver="## [$VERSION]" 'index($0, ver) == 1 {found=1; next} found && /^## \[/ {exit} found {print}' CHANGELOG.md)
+
+        if [ -z "$NOTES" ]; then
+          echo "WARNING: No section found in CHANGELOG.md for version $VERSION"
+          NOTES="_No changelog entry found for this version._"
+        fi
+
         EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
         echo "body<<$EOF" >> $GITHUB_OUTPUT
-        echo "## Changes in $CURRENT_TAG" >> $GITHUB_OUTPUT
-        echo "" >> $GITHUB_OUTPUT
-        echo "$CHANGELOG" >> $GITHUB_OUTPUT
+        echo "$NOTES" >> $GITHUB_OUTPUT
         echo "$EOF" >> $GITHUB_OUTPUT

@@ -1,28 +1,52 @@
 {
   "name": "lingvo-injector",
-  "version": "0.1.0",
   "description": "Star Citizen Localization Installer",
   "private": true,
+  "version": "0.2.0",
   "type": "module",
-  "workspaces": [
-    "app",
-    "server"
-  ],
   "scripts": {
-    "dev:app": "npm run tauri dev --workspace=app",
-    "dev:server": "npm run dev --workspace=server",
-    "dev": "concurrently \"npm run dev:server\" \"npm run dev:app\"",
-    "build:app": "npm run tauri:build:release --workspace=app",
-    "build:server": "echo 'Server does not require build'",
-    "start:server": "npm start --workspace=server",
-    "lint:app": "npm run lint --workspace=app",
-    "lint:server": "npm run lint --workspace=server",
-    "lint": "npm run lint:app && npm run lint:server",
-    "format:app": "npm run format --workspace=app",
-    "format:server": "npm run format --workspace=server",
-    "format": "npm run format:app && npm run format:server",
-    "install:all": "npm install && npm install --workspace=app && npm install --workspace=server",
-    "prepare": "husky"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "tauri:build:release": "tauri build",
+    "tauri:build:dev": "tauri build --config src-tauri/tauri.dev.conf.json --no-sign",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint --type-aware .",
+    "lint:fix": "oxlint --type-aware --fix .",
+    "format": "oxfmt --write \"./**/*.{js,jsx,ts,tsx,json,scss,md}\"",
+    "format:check": "oxfmt --check \"./**/*.{js,jsx,ts,tsx,json,scss,md}\"",
+    "prepare": "lefthook install"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.9.0",
+    "@tauri-apps/plugin-dialog": "^2.4.0",
+    "@tauri-apps/plugin-fs": "^2.4.2",
+    "@tauri-apps/plugin-opener": "^2",
+    "@tauri-apps/plugin-process": "^2.3.1",
+    "@tauri-apps/plugin-updater": "^2.9.0",
+    "@tauri-apps/plugin-window-state": "^2.4.1",
+    "i18next": "^25.6.0",
+    "mobx": "^6.15.0",
+    "mobx-react-lite": "^4.1.1",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-i18next": "^16.1.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.4.1",
+    "@commitlint/config-conventional": "^20.4.1",
+    "@tauri-apps/cli": "^2.9.0",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.3",
+    "lefthook": "^2.1.9",
+    "oxfmt": "^0.52.0",
+    "oxlint": "^1.67.0",
+    "oxlint-tsgolint": "^0.23.0",
+    "sass-embedded": "^1.97.3",
+    "typescript": "~5.9.2",
+    "vite": "^7.1.7"
   },
   "repository": {
     "type": "git",
@@ -36,25 +60,5 @@
     "desktop-app"
   ],
   "author": "mvoof",
-  "license": "MIT",
-  "devDependencies": {
-    "@commitlint/cli": "^20.4.1",
-    "@commitlint/config-conventional": "^20.4.1",
-    "concurrently": "^8.2.2",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.2.7"
-  },
-  "lint-staged": {
-    "app/**/*.{ts,tsx,js,jsx}": [
-      "eslint --fix --config app/eslint.config.js",
-      "prettier --write"
-    ],
-    "server/**/*.js": [
-      "eslint --fix --config server/eslint.config.js",
-      "prettier --write"
-    ],
-    "**/*.{json,md,html,css}": [
-      "prettier --write"
-    ]
-  }
+  "license": "MIT"
 }

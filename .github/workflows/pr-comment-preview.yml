@@ -1,0 +1,86 @@
+name: PR Comment Preview
+
+on:
+  workflow_run:
+    types:
+      - 'completed'
+    workflows:
+      - 'Build App on PR'
+
+jobs:
+  post-comment:
+    name: Post Preview Comment
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+      actions: read
+    steps:
+      - name: Find PR and build comment
+        uses: actions/github-script@v7
+        id: prepare
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const runId = context.payload.workflow_run.id;
+            const headSha = context.payload.workflow_run.head_sha;
+
+            const { data: prs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner,
+              repo,
+              commit_sha: headSha,
+            });
+
+            const pr = prs.find(p => p.state === 'open');
+            if (!pr) {
+              core.info('No open PR found for this SHA, skipping');
+              core.setOutput('skip', 'true');
+              return;
+            }
+            core.setOutput('pr_number', pr.number);
+
+            const { data } = await github.rest.actions.listWorkflowRunArtifacts({
+              owner,
+              repo,
+              run_id: runId,
+            });
+
+            const artifacts = data.artifacts.filter(a => !a.expired);
+            if (artifacts.length === 0) {
+              core.setFailed('No artifacts found');
+              return;
+            }
+
+            const jobUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${runId}`;
+
+            const rows = artifacts.map(a => {
+              const url = `${jobUrl}/artifacts/${a.id}`;
+              return `| ${a.name} | [${a.name}](${url}) | ${a.expires_at ?? 'Unknown'} |`;
+            }).join('\n');
+
+            const body = [
+              '## Build Preview',
+              '',
+              `[![badge]](${jobUrl})`,
+              '',
+              'Build Successful! You can find links to the downloadable artifacts below.',
+              '',
+              '| Artifact Name | Download Link | Expires At |',
+              '| ------------- | ------------- | ---------- |',
+              rows,
+              `| Commit        | ${headSha} | - |`,
+              `| Logs          | ${jobUrl} | - |`,
+              '',
+              '[badge]: https://img.shields.io/badge/Build_Success!-0d1117?style=for-the-badge&labelColor=3fb950&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjZmZmZmZmIj48cGF0aCBkPSJNMjEuMDMgNS43MmEuNzUuNzUgMCAwIDEgMCAxLjA2bC0xMS41IDExLjVhLjc0Ny43NDcgMCAwIDEtMS4wNzItLjAxMmwtNS41LTUuNzVhLjc1Ljc1IDAgMSAxIDEuMDg0LTEuMDM2bDQuOTcgNS4xOTVMMTkuOTcgNS43MmEuNzUuNzUgMCAwIDEgMS4wNiAwWiI+PC9wYXRoPjwvc3ZnPg==',
+            ].join('\n');
+
+            core.setOutput('body', body);
+
+      - name: Comment on PR
+        if: steps.prepare.outputs.skip != 'true'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          number: ${{ steps.prepare.outputs.pr_number }}
+          message: ${{ steps.prepare.outputs.body }}
