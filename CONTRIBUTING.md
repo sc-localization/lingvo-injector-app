@@ -30,7 +30,7 @@ Before creating an issue please ensure that the problem is not [already reported
    Before committing, ensure your code is clean and functional:
    - Run linting and formatting: `npm run lint:fix` and `npm run format`
    - Type check: `npm run typecheck`
-   - Build to check for errors: `npm run build`
+   - Build to check for errors: `npm run build` (frontend) and `cargo clippy` in `src-tauri/` (Rust)
 
    Once verified, commit your changes:
 
