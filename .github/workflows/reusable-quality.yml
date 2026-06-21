@@ -54,7 +54,7 @@ jobs:
   rust-checks:
     name: Rust
     needs: check-changes
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     if: ${{ inputs.force_all || needs.check-changes.outputs.rust == 'true' || needs.check-changes.outputs.ci == 'true' }}
     steps:
       - uses: actions/checkout@v5
@@ -63,7 +63,7 @@ jobs:
         uses: ./.github/actions/setup-dependencies
         with:
           node-version: '20'
-          platform: windows-latest
+          platform: ubuntu-latest
           cache-rust: 'true'
 
       - name: Cargo Clippy
