@@ -72,7 +72,7 @@ const Select = observer(
                   key={option.id}
                   role="option"
                   aria-selected={option.id === value}
-                  tabIndex={0}
+                  tabIndex={-1}
                   className={`${styles.option} ${option.id === value ? styles.active : ''}`}
                   onClick={() => handleSelect(option.id)}
                   onKeyDown={(e) => {
