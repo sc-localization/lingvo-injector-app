@@ -1,0 +1,31 @@
+{
+  "plugins": ["typescript", "react", "jsx-a11y"],
+  "options": {
+    "typeAware": true
+  },
+  "env": {
+    "browser": true,
+    "es2020": true
+  },
+  "ignorePatterns": [
+    "dist/**",
+    "node_modules/**",
+    "src-tauri/target/**",
+    "src-tauri/gen/schemas/**"
+  ],
+  "overrides": [
+    {
+      "files": ["vite.config.ts"],
+      "env": {
+        "node": true
+      }
+    },
+    {
+      "files": ["src/components/Select/Select.tsx"],
+      "rules": {
+        "jsx-a11y/no-noninteractive-element-to-interactive-role": "off",
+        "jsx-a11y/prefer-tag-over-role": "off"
+      }
+    }
+  ]
+}

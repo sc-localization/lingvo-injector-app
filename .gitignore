@@ -7,25 +7,19 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Dependencies - Monorepo
+# Dependencies
 node_modules/
-app/node_modules/
-server/node_modules/
 dist/
 dist-ssr/
 *.local
 
 # Environment
-.env
 .env.local
 .env.*.local
 
 # Build outputs
-app/dist/
-app/build/
-app/src-tauri/target/
-target/
-dist
+src-tauri/target/
+src-tauri/gen/
 
 # Editor directories and files
 .vscode/*
@@ -56,5 +50,3 @@ GEMINI.md
 # Rust analyzer
 .rust-analyzer/
 
-# Translation files (mock data for dev, real translations on server)
-server/translations/**/global.ini
